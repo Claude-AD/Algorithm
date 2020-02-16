@@ -12,6 +12,6 @@ int main()
 	{
 		sum += k;
 	}
-	cout << "1에서 " << n << "까지의 합은 " << sum << "입니다.\n";
+	printf("1에서 %d까지의 합은 %d 입니다.\n", n, sum);
 	return 0;
 }
