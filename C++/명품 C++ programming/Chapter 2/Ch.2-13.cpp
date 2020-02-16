@@ -3,37 +3,37 @@ using namespace std;
 
 int main()
 {
-	cout << "***** ½Â¸®Àå¿¡ ¿À½Å °ÍÀ» È¯¿µÇÕ´Ï´Ù. *****" << endl;
+	cout << "***** ìŠ¹ë¦¬ì¥ì— ì˜¤ì‹  ê²ƒì„ í™˜ì˜í•©ë‹ˆë‹¤. *****" << endl;
 	
 	while (true)
 	{
 		int order;
-		cout << "Â«»Í:1, Â¥Àå:2, ±º¸¸µÎ:3, Á¾·á:4>> ";
+		cout << "ì§¬ë½•:1, ì§œì¥:2, êµ°ë§Œë‘:3, ì¢…ë£Œ:4>> ";
 		cin >> order;
 
 		string menu;
 		if (order == 1)
-			menu = "Â«»Í";
+			menu = "ì§¬ë½•";
 		else if (order == 2)
-			menu = "Â¥Àå";
+			menu = "ì§œì¥";
 		else if (order == 3)
-			menu = "±º¸¸µÎ";
+			menu = "êµ°ë§Œë‘";
 		else if (order == 4)
 		{
-			cout << "¿À´Ã ¿µ¾÷Àº ³¡³µ½À´Ï´Ù." << endl;
+			cout << "ì˜¤ëŠ˜ ì˜ì—…ì€ ëë‚¬ìŠµë‹ˆë‹¤." << endl;
 			break;
 		}
 		else
 		{
-			cout << "´Ù½Ã ÁÖ¹®ÇÏ¼¼¿ä!!\n";
+			cout << "ë‹¤ì‹œ ì£¼ë¬¸í•˜ì„¸ìš”!!\n";
 			continue;
 		}
 
 		int people = 0;
-		cout << "¸îÀÎºĞ?";
+		cout << "ëª‡ì¸ë¶„?";
 		cin >> people;
 
-		cout << menu << " " << people << "ÀÎºĞ ³ª¿Ô½À´Ï´Ù" << endl;
+		printf("%s %dì¸ë¶„ ë‚˜ì™”ìŠµë‹ˆë‹¤\n", menu.c_str(), people);
 	}
 	return 0;
 }
