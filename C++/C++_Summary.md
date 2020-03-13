@@ -96,4 +96,109 @@ to_binary(int n)
   ```
   로 선언하면 읽기전용 메모리에
   문자열 배치 후 포인터 변수는 해당 메모리 주소를 값으로 가진다. 따라서 char형 배열을 인자로 전달받거나
-  문자열 리터럴 상수로 초기화 할 때 사용하는 것이 좋다.
+  문자열 리터럴 상수(읽기 전용 메모리에 할당한 문자열)로 초기화 할 때 사용하는 것이 좋다.
+
+---
+
+- **strtok 사용법**
+
+  ```C++
+  string str_arr[1000]; // 자른 문자열을 넣어줄 배열, vector 사용해도 됨
+  int str_cnt // 배열의 index로 활용
+  
+  string a = "My name is Claude";
+  
+  /* strtok는 char배열만 되므로(포인터, 즉 문자열 리터럴 상수로 안됨) strcpy로 string a를 c_str()을 활용해
+  동적할당한 배열에 집어 넣어주고 strtok 이용! (c_str()은 포인터를 반환함) */
+  
+  char* str_buff = new char[1000];
+  strcpy(str_buff, a.c_str());
+  
+  char* tok = strtok(str_buff, " ");
+  /* strtok가 포인터를 반환하므로 tok는 포인터로 선언, 첫번째 인자는 자르고 싶은 C style 문자열 배열(포인터 x),
+  두번째 인자는 기준으로 자를 토큰을 넣는다.(여기는 포인터 된다) -> 이렇게 자르면 tok의 경우 맨 첫 주소를
+  가지고 있다. 출력하면 My가 출력됨 */
+  
+  while(tok != nullptr)
+  {
+    str_arr[str_cnt++] = string(tok); // 후위 연산자의 활용과 string형변환에 주목하라.
+    tok = strtok(nullptr, " ") // 다음 문자열 부터 잘라낼 때는 자를 문자열 대신에 nullptr 넣어준다.
+  }
+  ```
+  
+  웬만하면 strtok_s, strcpy_s 사용 (VS option에서 STL check 끄면 strtok, strcpy 사용 가능)
+  
+  ```C++
+  // strtok_s
+  char* context;
+  char* tok = (str, " ", &context)
+  
+  // strcpy_s
+  strcpy(str1, size, str2) // size : buffer size + 1
+  ```
+  
+---
+  
+- **rand함수 (난수 생성)**
+  - `<cstdlib>` 헤더파일에 존재
+  - 0 ~ RAND_MAX(32767)까지의 난수를 생성함
+    
+    but. 프로그램이 실행될 때 난수가 정해지므로 몇 번을 실행해도 같은 결과값이 나온다.
+  - 따라서 srand()와 time()활용
+    - srand()는 `<cstdlib>` 헤더파일에 존재, ()안에 seed값이 들어감. seed값에 따라 다른 난수 생성
+    - time()은 `<ctime>` 헤더파일에 존재
+    - srand(time(nullptr)) 해주면 시시각각 다른 seed값이 들어가므로 항상 다른 난수 생성
+      ```C++
+      srand(time(nullptr));
+      int num = rand();
+      ```
+  - rand함수 범위지정
+    - 0 ~ (n - 1) 사이의 난수 생성
+      *rand % n*
+      
+      이 때 rand % n + 1 해주면 1 ~ n까지 난수 생성
+    - a ~ b 사이의 난수 생성 (a <= n < b)
+      *rand % (b-a) + a
+      
+      이 때 b-a = 개수, a = 범위 시작하는 수이다.
+      
+---
+
+- **&#42;연산자, &연산자**
+  ```C++
+  int* x; // 포인터형 변수
+  
+  int i = 3;
+  int* j = &i; // &는 변수의 주소값 리턴
+  *j = 4; // 역참조, 포인터형 변수에 저장된 주소값의 메모리에 쓰여있는 값을 나타냄, i = 4
+  
+  int a;
+  int &b = a; // a의 별명은 b
+  b = 3; // a = 3
+  
+---
+
+- **string find함수**
+  - string에서 특정 substring을 찾는 함수다. 찾은 substring의 index값을 반환한다.
+    ```C++
+    string a = "hi hello";
+    int idx = a.find(hello); // idx = 3
+    ```
+  - 내가 찾으려 하는 substring이 string에 없는 경우가 필요할 때는
+    ```C++
+    if(a.find("claude") == string::npos)
+    ```
+    위와 같이 코드를 작성하면 된다.
+
+---
+
+- **`<cmath>` 헤더파일**
+  - pow(a, b) : a의 b승
+  - sqrt() : 루트
+  - 코드 맨 윗줄에
+    ```C++
+    #define _USE_MATH_DEFINES
+    ```
+    추가하면 `M_PI // 3.141592...` 등의 상수 사용 가능
+   
+    
