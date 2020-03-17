@@ -201,4 +201,85 @@ to_binary(int n)
     ```
     추가하면 `M_PI // 3.141592...` 등의 상수 사용 가능
    
-    
+---
+
+- **isupper, islower, isalpha, toupper, tolower**
+  ```C++
+  isupper(c);
+  //c : 검사할 문자 또는 아스키 값
+  //반환값 : 문자가 A~Z 사이에 속하면 true, 아니면 false
+
+  islower(c);
+  //c : 검사할 문자 또는 아스키 값
+  //반환값 : 문자가 a~z 사이에 속하면 true, 아니면 false
+
+  isalpha(c);
+  //c : 검사할 문자 또는 아스키 값
+  //반환값 : 문자가 A~Z나 a~z 사이에 속하면 true, 아니면 false
+  
+  toupper(c);
+  //c : 단일문자
+  //반환값 : 단일문자 c를 대문자로 변환
+ 
+  toupper(c);
+  //c : 단일문자
+  //반환값 : 단일문자 c를 소문자로 변환
+  ```
+  
+---
+
+- **cin.get()**
+  - `<iostream>`에 존재
+  - 표준 입력 버퍼에서 문자 하나만 가져옴
+  - 공백, 개행 포함
+  - 문자만 입력받음
+  
+  - ```C++
+    while(1)
+    {
+      char ch;
+      cin.get(ch);
+      if (ch == '\n')
+      break;
+     }
+     // Enter 입력시 종료
+     ``` 
+
+---
+
+- **세 수가 같을 때 비교 법**
+  
+  두 개만 비교하면 된다
+  
+  ex)
+  ```C++
+  int num1, num2, num3;
+  if(num1 == num2 && num1 == num3)
+  {
+     ...
+  }
+  ```
+     
+---
+
+- **반복문에서 배열의 원소를 번갈아 출력하고 싶을 때**
+  
+  나머지를 활용한다
+  
+  ex)
+  ```C++
+  string arr[2] = {"Men", "Women"};
+  int cnt = 0;
+  while(true)
+  {
+    cout << arr[cnt % 2] << endl;
+    cnt++;
+  }
+  /* 출력값
+  Men
+  Women
+  Men
+  Women
+  ...
+  */
+  ```
