@@ -21,7 +21,7 @@
 
 - **정수형 변수**
   1. 부호 있는 정수형 변수
-      - char(1byte) < short(2byte) < int(4byte) < long(4byte) < long long(8byte)
+      - char(1byte) < short(2byte) < int(4byte) = long(4byte) < long long(8byte)
       - char, short, int는 서식지정자 %d로 출력하지만 long은 %ld, long long은 %lld로 출력한다.
       - C에서는 char형이 기본적으로 정수형이다. 문자형과 정수형 둘 다 쓰인다.
         ```C
