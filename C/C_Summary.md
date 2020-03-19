@@ -120,6 +120,7 @@
     ```
   - 소수점 앞 또는 뒤의 0은 생략 가능 ex) .1f, 1. f
   - float과 double을 printf로 출력할 때는 서식지정자 %f를 사용하고 long double은 %Lf 사용
+  - Window기준 float은 4byte 7자리, double, long double은 8byte 15자리이다.
   - 지수 표기법으로 표기할 때는 정수부분은 한 자릿수만 적고, 소수자릿수 뒤에 e와 지수를 표기한다.
     - f와 l을 붙이는 것은 동일
     - e는 x10^를 뜻한다.
