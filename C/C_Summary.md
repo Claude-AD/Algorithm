@@ -126,4 +126,7 @@
     - e는 x10^를 뜻한다.
     - printf로 지수표기법 그대로 출력하려면 서식 지정자 %e, %Le를 사용한다.
   - 양수 최댓값, 최솟값은 헤더파일 `<float.h>`에 존재한다.
+    - float : FLT_MIN, FLT_MAX
+    - double : DBL_MIN, DBL_MAX
+    - long double : LDBL_MIN, LDBL_MAX
   - 실수형의 언더플로우는 0 또는 쓰레기 값으로 처리하고 오버플로우는 무한대(inf)로 출력한다.
