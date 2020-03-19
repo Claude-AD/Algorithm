@@ -205,3 +205,55 @@
     printf("%Lf\n", 0.1L);    // 0.100000: long double 크기의 실수 리터럴
     ```
     
+---
+
+- **scanf**
+  
+  - scanf(서식, 변수의주소);
+    - int scanf(char const * const _Format, ...);
+    - 성공하면 가져온 값의 개수를 반환, 실패하면 EOF(-1)를 반환
+    ```C
+    //     ↓ 첫 번째 인수
+    scanf("%d", &num1);    // 표준 입력을 받아서 변수에 저장
+    //            ↑ 두 번째 인수
+    ```
+    
+  - `#define _CRT_SECURE_NO_WARNINGS`는 Visual Studio에서만 넣어주면 된다.(리눅스, OS X 사용자라면 넣지 않아도 된다). scanf는 나온 지 오래된 함수라 입력 값의 길이를 설정할 수가 없다. 따라서 보안에 취약하기 때문에 Visual Studio에서는 사용하지 말라는 경고가 출력되고 컴파일 에러가 발생합니다. `#define _CRT_SECURE_NO_WARNINGS`를 넣지 않고 scanf 함수를 사용하면 scanf_s 함수를 대신 사용하거나 _CRT_SECURE_NO_WARNINGS를 사용하라고 나온다. scanf_s 함수는 입력 값의 길이를 설정할 수 있지만 C 언어 표준 함수는 아니며 Visual studio(Visual C++) 전용이다.
+  
+  - scanf 함수는 printf 함수와 사용 방법이 유사하다. 입력받을 개수만큼 서식 지정자를 넣어주고, 서식 지정자 개수만큼 변수를 넣어주면 된다. 
+    ```C
+    printf("정수를 두 개 입력하세요: ");
+    scanf("%d %d", &num1, &num2);    // 값을 두 개 입력받아서 변수 두 개에 저장
+    ```
+    
+  - 여기서 변수를 double로 선언했다면 scanf에는 서식 지정자로 %lf를 넣고, long double로 선언했다면 %Lf를 넣어야 한다(double은 printf로 출력할 때 %f를 써도 되지만 scanf는 %lf를 써야 한다).
+    ```C
+    double num1;
+    scanf("%lf", &num1);    // 자료형이 double일 때는 %lf
+
+    long double num2;
+    scanf("%Lf", &num2);    // 자료형이 long double일 때는 %Lf
+    ```
+    
+---
+
+- **getchar, putchar**
+
+  getchar 함수는 표준 입력에서 문자 하나를 입력받은 뒤 결과를 반환한다. 만약 문자 여러 개를 입력해도 첫 번째 문자만 반환된다.
+
+  getchar 함수에 대응하는 함수로 putchar가 있는데 이 함수는 문자 하나를 화면에 출력한다.
+  
+  둘 다 모두 `<stdio.h>`헤더파일에 선언되어 있다.
+  
+  ```C
+  char c1 = getchar();    // 문자 하나를 입력받음
+  printf("%c\n", c1);
+  // 키보드로 a를 입력받으면 a를 출력
+  
+  char c1 = 'a';
+  putchar(c1);
+  // 출력값 a
+  ```
+  
+---
+
