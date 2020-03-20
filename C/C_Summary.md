@@ -353,3 +353,71 @@
       ![MSB, LSB](https://dojang.io/pluginfile.php/245/mod_page/content/19/unit24-1.png)
       비트에서 첫 번째 비트를 최상위 비트(Most Significant Bit, MSB), 마지막 비트를 최하위 비트(Least Siginificant Bit, LSB)라고 부른다.
       
+---
+
+- **비트 연산자로 flag 처리하기**
+  - flag란?
+    
+    상태를 저장하는 방식으로 비트가 1이면 on, 0이면 off를 나타낸다. 주로 적은 공간에 정보를 저장해야 하고, 빠른 속도가 필요할 때 사용한다 (ex. cpu ... etc). 비트 하나에 상태 하나가 저장되므로 예를 들어 int 자료형에는 32가지의 상태를 저장할 수 있다(int는 4byte, 32bit).
+    
+  - 특정 비트를 켜는 법
+  
+    *플래그 |= 마스크*
+    ```C
+    unsigned char flag = 0;
+ 
+    flag |= 1;    // 0000 0001 마스크와 비트 OR로 여덟 번째 비트를 켬
+    flag |= 2;    // 0000 0010 마스크와 비트 OR로 일곱 번째 비트를 켬
+    flag |= 4;    // 0000 0100 마스크와 비트 OR로 여섯 번째 비트를 켬
+ 
+    printf("%u\n", flag);    // 7: 0000 0111
+    ```
+    플래그로 사용할 변수에 |= 연산자와 숫자를 사용하여 특정 비트를 켠다. 여기서 플래그의 비트를 조작하거나 검사할 때 사용하는 숫자를 마스크(mask)라고 부른다. 예제에서는 1, 2, 4가 마스크다.
+    
+    플래그의 비트를 켜는 동작은 비트 OR 연산의 특성을 활용한 것인데 0 | 1과 1 | 1은 1이므로 flag의 비트가 꺼져있으면 비트를 켜고, 켜져 있으면 그대로 유지한다.
+    
+    ![플래그 켜기](https://dojang.io/pluginfile.php/247/mod_page/content/32/unit24-9.png)
+    
+    플래그의 특정 비트가 켜져 있는지 검사하려면 & 연산자를 사용하면 된다.
+    ```C
+    if (flag & 4)    // & 연산자로 0000 0100 비트가 켜져 있는지 확인
+      printf("0000 0100은 켜져 있음\n");
+    else
+      printf("0000 0100은 꺼져 있음\n");
+    ```
+    
+  - 특정 비트를 끄는 법
+    
+    *플래그 &= ~마스크*
+    
+    마스크 값을 ~ 연산자로 비트를 뒤집은 뒤 &= 연산자를 사용하여 특정 비트를 끈다.
+    ```C
+    unsigned char flag = 7;    // 7: 0000 0111
+ 
+    flag &= ~2;    // 1111 1101 마스크 값 2의 비트를 뒤집은 뒤 비트 AND로 일곱 번째 비트를 끔
+ 
+    printf("%u\n", flag);    // 5: 0000 0101
+    ```
+    
+    ![플래그 끄기](https://dojang.io/pluginfile.php/247/mod_page/content/32/unit24-10.png)
+    
+  - 비트가 켜져있으면 끄고, 꺼져있으면 켜기 (toggle)
+    
+    *플래그 ^= 마스크*
+    
+    ```C
+    unsigned char flag = 7;    // 7: 0000 0111
+ 
+    flag ^= 2;    // 0000 0010 마스크와 비트 XOR로 일곱 번째 비트를 토글
+    flag ^= 8;    // 0000 1000 마스크와 비트 XOR로 다섯 번째 비트를 토글
+ 
+    printf("%u\n", flag);    // 13: 0000 1101
+    ```
+    
+    ![toggle](https://dojang.io/pluginfile.php/247/mod_page/content/32/unit24-11.png)
+    
+---
+
+
+    
+   
