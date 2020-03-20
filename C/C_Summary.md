@@ -348,7 +348,7 @@
     ```
     즉, 비트의 각 자릿수는 2의 거듭제곱을 뜻하므로 비트의 이동 횟수는 지수(exponent)라 할 수 있고 예를 들면 1 << 3은 2^3과 같다.
     
-  - 비트에서 첫째 자리나 마지막 자리를 넘어서는 비트는 그대로 사라진다.
+  - 비트에서 첫째 자리나 마지막 자리를 넘어서는 비트는 그대로 사라진다. 부족한 공간은 unsigned일 때는 0으로, signed일 때는 부호 비트의 값으로 채워진다.
     - *참고 ~ 최상위 비트, 최하위 비트*
       ![MSB, LSB](https://dojang.io/pluginfile.php/245/mod_page/content/19/unit24-1.png)
       비트에서 첫 번째 비트를 최상위 비트(Most Significant Bit, MSB), 마지막 비트를 최하위 비트(Least Siginificant Bit, LSB)라고 부른다.
