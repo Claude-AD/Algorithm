@@ -551,3 +551,44 @@
   
   메모리 창은 16진수뿐만 아니라 10진수로도 볼 수 있는데 다음과 같이 메모리 창에서 마우스 오른쪽 버튼을 누르면 팝업 메뉴가 나온다. 16진수 표시(H)가 기본으로 선택되어 있는데 부호 있는 표시(S), 부호 없는 표시(U)를 클릭하면 메모리의 내용을 10진수로 볼 수 있다.
   
+---
+
+- **const와 포인터**
+  - 상수를 가리키는 포인터(pointer to constant)
+    ```C
+    const int num1 = 10;    // int형 상수
+    const int *numPtr;      // int형 상수를 가리키는 포인터. int const *numPtr도 같음
+
+    numPtr = &num1;
+    *numPtr = 20;    // 컴파일 에러. num1이 상수이므로 역참조로 값을 변경할 수 없음
+    ```
+    먼저 num1이 const int이므로 이 변수의 주소를 넣을 수 있는 포인터는 const int &#42;로 선언해야 한다. 그리고 num1의 주소를 numPtr에 넣은 뒤 역참조로 값을 변경하려고 해도 num1은 상수이므로 컴파일 에러가 발생한다. 즉, pointer to constant는 메모리 주소에 저장된 값을 변경할 수 없다.
+    
+  - 포인터 자체가 상수인 상황(constant pointer)
+  
+     &#42; 뒤에 const를 붙인다.
+     ```C
+     int num1 = 10;    // int형 변수
+     int num2 = 20;    // int형 변수
+     int * const numPtr = &num1;    // int형 포인터 상수
+
+     numPtr = &num2;    // 컴파일 에러. 포인터(메모리 주소)를 변경할 수 없음
+     ```
+     numPtr에 num1의 주소가 들어가 있는 상태에서 다시 num2의 주소를 넣으려고 하면 컴파일 에러가 발생한다. numPtr은 포인터 자체가 상수이므로 다른 포인터(메모리 주소)를 할당할 수 없다. 즉, constant pointer는 메모리 주소를 변경할 수 없다.
+     
+   - 포인터가 상수이면서 상수를 가리키는 상황(constant pointer to constant)
+   
+    포인터를 선언하는 자료형에도 const를 붙이고 &#42; 뒤에도 const를 붙인다.
+    ```C
+    const int num1 = 10;    // int형 상수
+    const int num2 = 20;    // int형 상수
+    const int * const numPtr = &num1;    // int형 상수를 가리키는 포인터 상수
+                                     // int const * const numPtr도 같음
+
+    *numPtr = 30;      // 컴파일 에러. num1이 상수이므로 역참조로 값을 변경할 수 없음
+    numPtr = &num2;    // 컴파일 에러. 포인터(메모리 주소)를 변경할 수 없음
+    ```
+    여기서는 numPtr을 역참조한 뒤 값을 변경하려고 해도 num1은 상수이므로 컴파일 에러가 발생한다. 그리고 numPtr 자체도 상수이므로 num2의 주소를 넣으려고 하면 컴파일 에러가 발생한다. 즉, constant pointer to constant는 메모리 주소도 변경할 수 없고 메모리 주소에 저장된 값도 변경할 수 없다.
+    
+---
+
