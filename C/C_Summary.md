@@ -514,3 +514,40 @@
     정리하자면 포인터를 선언할 때 &#42;는 "이 변수가 포인터다"라고 알려주는 역할이고, 포인터에 사용할 때 &#42;는 "포인터의 메모리 주소를 역참조하겠다"라는 뜻이다.
     
     ![참조, 역참조, 변수](https://dojang.io/pluginfile.php/339/mod_page/content/30/unit34-9.png)
+
+---
+
+- **Debugging 심화 - 메모리, 참조, 역참조 확인하기**
+  
+  ![지역 창](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-10.png)
+  
+  지역 창을 보면 num1과 numPtr에 저장된 값을 볼 수 있는데 num1은 초깃값으로 10을 할당했으므로 10이 표시되고, numPtr은 num1의 메모리 주소를 할당했으므로 0x0084fe5c가 표시된다. (메모리는 컴퓨터마다, 실행할 때마다 달라진다.)
+  
+  ![지역 창 포인터](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-12.png)
+  
+  지역 창에서 numPtr의 왼쪽에 있는 ▷을 클릭하면 현재 메모리 주소에 저장된 값이 표시된다. 여기서는 numPtr이 num1의 메모리 주소를 저장하고 있으므로 num1의 값 10이 나온다.
+  
+  메모리의 내용을 직접 확인하려면 메뉴의 디버그(D) > 창(W) > 메모리(M) > 메모리 1(1)을 클릭한다.
+  
+  ![메모리창 띄우는 법 1](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-13.png)
+  ![메모리창 띄우는 법 2](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-14.png)
+  ![메모리창 띄우는 법 3](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-15.png)
+  
+  화면 아래쪽에 메모리 1 탭이 열리면 소스 코드 편집 창에서 numPtr 위에 마우스 커서를 가져다 놓는다. 그러면 포인터에 저장된 메모리 주소가 나오는데 이 메모리 주소를 선택하고 마우스 오른쪽 버튼을 누른 뒤 복사, 붙여넣기 하면 내용을 볼 수 있다.
+  
+  ![메모리창](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-16.png)
+  
+  이제 메모리 주소 0x0084fe5c의 내용이 보인다. 0a 00 00 00라고 나오는데 메모리의 내용은 보통 16진수로 표현하므로 0a를 10진수로 변환하면 10이다. 즉, 이 메모리 공간이 변수 num1의 위치다. 특히 num1은 int 자료형이므로 4바이트다. 따라서 0a 00 00 00과 같이 숫자 4개를 차지한다. 또한, 우리가 사용하는 x86(x86-64) 계열 CPU는 리틀 엔디언 방식이라 값이 거꾸로 저장된다. 그래서 0a 00 00 00은 원래 00 00 00 0a이며 0a 값을 갖는다는 뜻이다. 
+  
+  ![코드 실행 후 역참조값 변화](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-17.png)
+  
+  F10 키를 눌러 &#42;numPtr = 20;이 있는 줄을 실행하면 0a가 14로 바뀌었다(코드 실행으로 인해 바뀐 메모리 공간은 빨간색으로 표시됨). 16진수 14는 10진수로 20이므로 역참조 후 20을 할당하는 코드 &#42;numPtr = 20;이 실행되어 메모리의 내용이 바뀐 것을 확인할 수 있다.
+  
+  ![조사식 창](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-20.png)
+  
+  화면 아래 쪽의 조사식 1 탭을 클릭하고 이름 부분을 클릭하여 &num1과 &#42;numPtr을 입력하면 &num1은 num1의 메모리 주소 0x0084fe5c가 표시되고, &#42;numPtr은 numPtr을 역참조한 값인 20이 표시된다. 특히 조사식 창을 이용하면 소스 코드를 고치지 않아도 변수의 값이나 메모리 주소를 바로 확인할 수 있다는 장점이 있다.
+  
+  ![10진수 메모리창](https://dojang.io/pluginfile.php/1000/mod_page/content/16/unit34-21.png)
+  
+  메모리 창은 16진수뿐만 아니라 10진수로도 볼 수 있는데 다음과 같이 메모리 창에서 마우스 오른쪽 버튼을 누르면 팝업 메뉴가 나온다. 16진수 표시(H)가 기본으로 선택되어 있는데 부호 있는 표시(S), 부호 없는 표시(U)를 클릭하면 메모리의 내용을 10진수로 볼 수 있다.
+  
