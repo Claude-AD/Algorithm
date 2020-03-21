@@ -578,17 +578,17 @@
      
    - 포인터가 상수이면서 상수를 가리키는 상황(constant pointer to constant)
    
-    포인터를 선언하는 자료형에도 const를 붙이고 &#42; 뒤에도 const를 붙인다.
-    ```C
-    const int num1 = 10;    // int형 상수
-    const int num2 = 20;    // int형 상수
-    const int * const numPtr = &num1;    // int형 상수를 가리키는 포인터 상수
-                                     // int const * const numPtr도 같음
+     포인터를 선언하는 자료형에도 const를 붙이고 &#42; 뒤에도 const를 붙인다.
+     ```C
+     const int num1 = 10;    // int형 상수
+     const int num2 = 20;    // int형 상수
+     const int * const numPtr = &num1;    // int형 상수를 가리키는 포인터 상수
+                                          // int const * const numPtr도 같음
 
-    *numPtr = 30;      // 컴파일 에러. num1이 상수이므로 역참조로 값을 변경할 수 없음
-    numPtr = &num2;    // 컴파일 에러. 포인터(메모리 주소)를 변경할 수 없음
-    ```
-    여기서는 numPtr을 역참조한 뒤 값을 변경하려고 해도 num1은 상수이므로 컴파일 에러가 발생한다. 그리고 numPtr 자체도 상수이므로 num2의 주소를 넣으려고 하면 컴파일 에러가 발생한다. 즉, constant pointer to constant는 메모리 주소도 변경할 수 없고 메모리 주소에 저장된 값도 변경할 수 없다.
+     *numPtr = 30;      // 컴파일 에러. num1이 상수이므로 역참조로 값을 변경할 수 없음
+     numPtr = &num2;    // 컴파일 에러. 포인터(메모리 주소)를 변경할 수 없음
+     ```
+     여기서는 numPtr을 역참조한 뒤 값을 변경하려고 해도 num1은 상수이므로 컴파일 에러가 발생한다. 그리고 numPtr 자체도 상수이므로 num2의 주소를 넣으려고 하면 컴파일 에러가 발생한다. 즉, constant pointer to constant는 메모리 주소도 변경할 수 없고 메모리 주소에 저장된 값도 변경할 수 없다.
     
 ---
 
