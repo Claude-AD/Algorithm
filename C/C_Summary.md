@@ -994,6 +994,68 @@
 
   EOF는 stdio.h 헤더 파일에 정의되어 있으며 정수 -1이다. 보통 EOF는 파일 처리 함수가 실패했을 때 반환된다.
 
+---
+
+- **문자열 길이 구하기**
+
+  - strlen 함수로 구하며 `<string.h>`헤더파일에 존재한다.
+
+  - strlen(문자열포인터); 또는 strlen(문자배열); 로 사용한다.
+
+    ```c
+    char *s1 = "Hello";       // 포인터에 문자열 Hello의 주소 저장
+    char s2[10] = "Hello";    // 크기가 10인 char형 배열을 선언하고 문자열 할당
+    
+    printf("%d\n", strlen(s1));    // 5: strlen 함수로 문자열의 길이를 구함
+    printf("%d\n", strlen(s2));    // 5: strlen 함수로 문자열의 길이를 구함
+    ```
+
+---
+
+- **문자열 비교하기**
+
+  - strcmp(s1, s2);와 같이 strcmp 함수에 비교할 문자열을 넣어주면 결과를 정수로 반환한다. 첫 번째 문자부터 차례대로 비교하며 비교 기준은 각 문자의 ASCII 코드이다.
+
+    - -1: ASCII 코드 기준으로 문자열2(s2)가 클 때
+    - 0: ASCII 코드 기준으로 두 문자열이 같을 때
+    - 1: ASCII 코드 기준으로 문자열1(s1)이 클 때
+
+  - ```c
+     printf("%d\n", strcmp("aaa", "aaa"));    //  0: aaa와 aaa는 같으므로 0
+     printf("%d\n", strcmp("aab", "aaa"));    //  1: aab와 aaa 중에서 aab가 크므로 1
+     printf("%d\n", strcmp("aab", "aac"));    // -1: aab와 aac 중에서 aac가 크므로 -1
+    ```
+
+  - strcmp 함수는 운영체제에 따라서 동작 방식이 조금 다르다. Windows(Visual Studio)에서는 문자열이 다르면 1과 -1을 반환하지만 리눅스와 OS X에서는 ASCII 코드값의 차이를 반환한다. 그러므로 리눅스와 OS X에서 strcmp의 반환값을 판단할 때는 switch 분기문 대신 if조건문을 사용해야 한다.
+
+    ```c
+    char s1[20];
+    char s2[20];
+    
+    printf("문자열 두 개를 입력하세요: ");
+    scanf("%s %s", s1, s2);
+    
+    int ret = strcmp(s1, s2);    // 입력된 문자열 비교
+    printf("반환값: %d\n", ret);
+    
+    // 리눅스와 OS X에서는 ASCII 코드값의 차이를 반환하므로
+    // if 조건문으로 판단
+    if (ret == 0)
+    {
+        printf("두 문자열이 같음\n");
+    }
+    else if (ret > 0)    // 양수일 때
+    {
+        printf("%s보다 %s가 큼\n", s2, s1);
+    }
+    else if (ret < 0)    // 음수일 때
+    {
+        printf("%s보다 %s가 큼\n", s1, s2);
+    }
+    ```
+
+---
+
 
 
 
