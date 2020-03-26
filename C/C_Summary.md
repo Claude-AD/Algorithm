@@ -1195,6 +1195,92 @@
     printf("%s\n", ptr);    // den Diary
     ```
 
+---
+
+- **문자열 자르기**
+
+  - `<string.h>`헤더파일에 선언되어있음
+
+  - strtok(대상문자열, 기준문자);로 선언한다.
+
+    - 자른 문자열을 반환, 더 이상 자를 문자열이 없으면 NULL반환
+
+    ```c
+    char s1[30] = "The Little Prince";  // 크기가 30인 char형 배열을 선언하고 문자열 할당
+    
+    char *ptr = strtok(s1, " ");      // " " 공백 문자를 기준으로 문자열을 자름, 포인터 반환
+    
+    while (ptr != NULL)               // 자른 문자열이 나오지 않을 때까지 반복
+    {
+        printf("%s\n", ptr);          // 자른 문자열 출력
+        ptr = strtok(NULL, " ");      // 다음 문자열을 잘라서 포인터를 반환
+    }
+    ```
+
+    ```c
+    // 출력값
+    The
+    Little
+    Prince
+    ```
+
+    strtok 함수를 사용할 때는 처음에만 자를 문자열를 넣어주고, 그다음부터는 NULL을 넣어준다는 점을 기억한다.
+
+    ![strtok가 문자열을 자르는 원리1](https://dojang.io/pluginfile.php/440/mod_page/content/35/unit45-1.png)
+
+    ![strtok가 문자열을 자르는 원리2](https://dojang.io/pluginfile.php/440/mod_page/content/35/unit45-2.png)
+
+    ![strtok가 문자열을 자르는 원리3](https://dojang.io/pluginfile.php/440/mod_page/content/35/unit45-3.png)
+
+    ![strtok가 문자열을 자르는 원리4](https://dojang.io/pluginfile.php/440/mod_page/content/35/unit45-4.png)
+
+    strtok 함수는 문자열을 새로 생성해서 반환하는 것이 아니라 자르는 부분을 널 문자(NULL)로 채운 뒤 잘린 문자열의 포인터를 반환한다. 따라서 원본 문자열의 내용을 바꾸므로 사용에 주의해야 한다.
+
+    문자열 포인터를 이용할 때는 문자열 포인터에 문자열 리터럴을 할당하는 대신, 동적 메모리를 할당하고, 문자열을 복사해야 한다.
+
+    ```c
+    char *s1 = malloc(sizeof(char) * 30);    // char 30개 크기만큼 동적 메모리 할당
+    
+    strcpy(s1, "The Little Prince");    // s1에 문자열 복사
+    
+    char *ptr = strtok(s1, " ");    // 동적 메모리에 들어있는 문자열은 자를 수 있음
+    
+    while (ptr != NULL)
+    {
+       printf("%s\n", ptr);
+       ptr = strtok(NULL, " ");
+    }
+    
+    free(s1);    // 동적 메모리 해제
+    ```
+
+  -  기준 문자 한번에 여러 개 설정하기
+
+    기준 문자를 한 번에 여러 개 지정하기 위해서는 다음과 같이 하면 된다.
+
+    ```c
+    char s1[30] = "2015-06-10T15:32:19";    // 크기가 30인 char형 배열을 선언하고 문자열 할당
+    
+    char *ptr = strtok(s1, "-T:");    // -, T, 콜론을 기준으로 문자열을 자름
+                                      // 포인터 반환
+    
+    while (ptr != NULL)               // 자른 문자열이 나오지 않을 때까지 반복
+    {
+        printf("%s\n", ptr);          // 자른 문자열 출력
+        ptr = strtok(NULL, "-T:");    // 다음 문자열을 잘라서 포인터를 반환
+    }
+    ```
+
+    ```c
+    // 출력값
+    2015
+    06
+    10
+    15
+    32
+    19
+    ```
+
     
 
 
