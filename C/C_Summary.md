@@ -1576,7 +1576,48 @@
 
     ![구조체 포인터 역참조](https://dojang.io/pluginfile.php/482/mod_page/content/31/4902.png)
 
-    
+---
+
+- **`<math.h>`헤더 파일**
+
+  - sqrt(값)
+
+    - double sqrt(double _X);
+
+    - 제곱근을 반환, _X가 음수이면 NaN을 반환
+
+    - GCC에서 sqrt를 사용하려면 컴파일 옵션에 -lm을 지정한다. (수학 라이브러리를 링크한다는 뜻이다.)
+
+      `$ gcc two_point_distance.c -o two_point_distance -lm`
+
+  - pow(값, 지수)
+
+    - double pow(double _X, double _Y);
+
+    - _X의 _Y 거듭제곱을 반환
+
+      ```c
+      double c = sqrt(pow(a, 2) + pow(b, 2));
+      ```
+
+  - abs(정수);
+
+    - int abs(int _X);
+    - 정수 절댓값을 반환
+
+  - fabs(double형 실수);
+
+    - double fabs(double _X);
+    - double형 실수 절댓값을 반환
+
+  - fabsf(float형 실수)
+
+    - float fabsf(float _X);
+    - float형 실수 절댓값을 반환
+
+---
+
+
 
 
 
