@@ -1459,25 +1459,26 @@
       - 단, 이경우에는 구조체 멤버가 선언된 순서대로 넣고, 각 멤버의 자료형에 맞게 넣는다.
 
         ```c
-    // name에는 "홍길동", age에는 30, address에는 "서울시 용산구 한남동"
-    struct Person p1 = { .name = "홍길동", .age = 30, .address = "서울시 용산구 한남동" };
-    
+      // name에는 "홍길동", age에는 30, address에는 "서울시 용산구 한남동"
+      struct Person p1 = { .name = "홍길동", .age = 30, .address = "서울시 용산구 한남동" };
+        ```
+  
     // name에는 "고길동", age에는 40, address에는 "서울시 서초구 반포동"
     struct Person p2 = { "고길동", 40, "서울시 서초구 반포동" };
-        ```
-
-  - typeef로 구조체 별칭 정하기
-
+      ```
+  
+- typeef로 구조체 별칭 정하기
+  
     ```c
     typedef struct 구조체이름 {
         자료형 멤버이름;
     } 구조체별칭;
-    ```
-
-    typedef로 구조체의 별칭을 만들었다면 변수는 다음과 같이 선언한다.
-
-    - 구조체별칭 변수이름;
-
+  ```
+  
+  typedef로 구조체의 별칭을 만들었다면 변수는 다음과 같이 선언한다.
+  
+  - 구조체별칭 변수이름;
+  
     ```c
     typedef struct _Person {   // 구조체 이름은 _Person
         char name[20];            // 구조체 멤버 1
@@ -1493,10 +1494,10 @@
         p1.age = 30;
         strcpy(p1.address, "서울시 용산구 한남동");
     }
-    ```
-
-    typedef는 자료형의 별칭을 만드는 기능이므로 구조체 뿐만 아니라 모든 자료형의 별칭을 만들 수 있다.
-
+  ```
+  
+  typedef는 자료형의 별칭을 만드는 기능이므로 구조체 뿐만 아니라 모든 자료형의 별칭을 만들 수 있다.
+  
     ```c
     typedef int MYINT;      // int를 별칭 MYINT로 정의
     typedef int* PMYINT;    // int 포인터를 별칭 PMYINT로 정의
@@ -1506,10 +1507,10 @@
     
     numPtr1 = &num1;   // 포인터에 변수의 주소 저장
                        // 사용 방법은 일반 변수, 포인터와 같음 
-    ```
-
-    typedef로 별칭을 지정해 준다면 구조체 이름을 생략해도 된다.
-
+  ```
+  
+  typedef로 별칭을 지정해 준다면 구조체 이름을 생략해도 된다.
+  
     ```c
     typedef struct {    // 구조체 이름이 없는 익명 구조체
         char name[20];        // 구조체 멤버 1
@@ -1614,6 +1615,82 @@
 
     - float fabsf(float _X);
     - float형 실수 절댓값을 반환
+
+---
+
+- **구조체 정렬**
+
+  컴퓨터에서 CPU가 메모리에 접근할 때 32비트 CPU는 4바이트 단위, 64비트 CPU는 8바이트 단위로 접근한다. 만약 32비트 CPU에서 4바이트보다 작은 데이터에 접근할 경우 내부적으로 시프트 연산이 발생해서 효율이 떨어진다. 그래서 C언어 컴파일러는 CPU가 메모리의 데이터에 효율적으로 접근할 수 있도록 구조체를 일정한 크기로 정렬을 하게 된다. C 언어 에서는 구조체를 정렬할 때 멤버 중에서 가장 큰 자료형의 크기의 배수로 정렬한다.
+
+  ![구조체 정렬](https://dojang.io/pluginfile.php/495/mod_page/content/25/unit51-1.png)
+
+  이렇게 구조체를 정렬할 때 남는 공간을 채우는 것을 패딩이라고 부른다. 
+
+  구조체에서 멤버의 위치(offset)를 구할 때는 offsetof 매크로를 사용한다. (`<stddef.h>`헤더 파일에 정의되어 있다.) 
+
+  - offsetof(struct 구조체, 멤버);
+  - offsetof(구조체별칭, 멤버);
+
+  이를 사용해 위의 내용을 확인해 보면
+
+  ```c
+  struct PacketHeader {
+      char flags;    // 1바이트
+      int seq;       // 4바이트
+  };
+  
+  int main()
+  {
+      printf("%d\n", offsetof(struct PacketHeader, flags));    // 0
+      printf("%d\n", offsetof(struct PacketHeader, seq));      // 4
+  
+      return 0;
+  }
+  ```
+
+  seq 위치가 1이 아닌 4가 나오는 것을 확인 할 수 있다.
+
+  그러나 구조체의 멤버를 정렬하면 안 되는 경우도 있다. 만약 사진 파일을 저장할 때마다 정렬이 발생한다고 상상해보자. 추억을 담은 사진이 저장할 때마다 조금씩 깨질 것이다. 또 다른 예로는 네트워크로 데이터를 전송할 때 몇 바이트씩 어떤 순서로 보낼지 규약을 정해놓았는데 이 떄 정렬이 발생해버리면 정해놓은 규약에서 벗어나게 되므로 받는 쪽에서는 데이터를 알아볼 수 없게 된다. 그렇다면 구조체 정렬을 피하려면 어떻게 해야 할까? 각 컴파일러에서 제공하는 특별한 지시자를 사용하면 구조체 정렬 크기를 조절할 수 있다.
+
+  - Visual Studio, GCC 4.0 이상
+
+    ```c
+    #pragma pack(push, 정렬크기)
+    #pragma pack(pop)
+    ```
+
+  - GCC 4.0 미만
+
+    ```c
+    __attribute__((aligned(정렬크기), packed))
+    ```
+
+  코드로 예를 들어보자
+
+  ```c
+  #include <stdio.h>
+  
+  #pragma pack(push, 1)    // 1바이트 크기로 정렬
+  struct PacketHeader {
+      char flags;    // 1바이트
+      int seq;       // 4바이트
+  };
+  #pragma pack(pop)        // 정렬 설정을 이전 상태(기본값)로 되돌림
+  
+  int main()
+  {
+      struct PacketHeader header;
+  
+      printf("%d\n", sizeof(header.flags));    // 1: char는 1바이트
+      printf("%d\n", sizeof(header.seq));      // 4: int는 4바이트
+      printf("%d\n", sizeof(header));          // 5: 1바이트 단위로 정렬했으므로 
+                                               // 구조체 전체 크기는 5바이트
+  
+      return 0;
+  }
+  ```
+
+  이렇게 구조체를 1바이트 크기로 정렬할 수 있다. 이렇게 1바이트 크기로 정렬하는 것은 구조체의 내용을 파일에 쓰거나 네트워크로 전송할 때 꼭 필요하다.
 
 ---
 
