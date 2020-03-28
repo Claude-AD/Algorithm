@@ -1694,7 +1694,50 @@
 
 ---
 
+- **구조체 멤버를 모두 0으로 만들 때**
+  - memset(구조체포인터, 설정할 값, sizeof(struct 구조체));
+  - 여기서 구조체포인터는 malloc함수로 동적할당한 구조체 포인터일 수도 있고 &연산자를 사용한 구조체의 주소일 수도 있다.
 
+---
+
+- **구조체와 메모리 복사하기**
+
+  매번 내용이 같은 구조체를 만들려면 상당히 번거롭다. 또는 이미 생성하여 값을 저장한 구조체나 메모리를 다른 곳에 복사할 경우가 자주 있다. 이 떄는 memcpy 함수를 사용하여 메모리의 내용을 다른 곳으로 복사할 수 있다.
+
+  - memcpy(목적지포인터, 원본포인터, 크기);
+
+    - `<string.h>`헤더 파일에 선언되어 있다.
+    - void* memcpy(void\* _Dst, void const\* _Src, size_t _Size);
+    - 목적지 포인터를 반환
+
+    ```c
+    #include <stdio.h>
+    #include <string.h>    // memcpy 함수가 선언된 헤더 파일
+    
+    struct Point2D {
+        int x;
+        int y;
+    };
+    
+    int main()
+    {
+        struct Point2D p1;
+        struct Point2D p2;
+    
+        p1.x = 10;    // p1의 멤버에만 값 저장
+        p1.y = 20;    // p1의 멤버에만 값 저장
+    
+        memcpy(&p2, &p1, sizeof(struct Point2D));    // Point2D 구조체 크기만큼 p1의 내용을 p2로 복사
+    
+        printf("%d %d\n", p2.x, p2.y);    // 10 20: p1의 내용을 p2로 복사했으므로 10 20
+    
+        return 0;
+    }
+    ```
+
+    동적할당한 구조체도 마찬가지로 사용하면 된다.
+
+---
 
 
 
