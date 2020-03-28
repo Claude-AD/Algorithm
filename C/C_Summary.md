@@ -1739,6 +1739,44 @@
 
 ---
 
+- **구조체 배열을 선언하는 동시에 초기화하기**
+  - struct 구조체이름 변수이름[크기] = { { .멤버이름1 = 값1, .멤버이름2 = 값2 }, { .멤버이름1 = 값3, .멤버이름2 = 값4 } };
+  - struct 구조체이름 변수이름[크기] = { { 값1, 값2 }, { 값3, 값4 } };
+  - 만약 모든 요소의 멤버를 0으로 초기화하고 싶다면 { 0 }을 할당하면 된다.
+
+---
+
+- **구조체 포인터 배열 선언하기**
+
+  ```c
+  #include <stdio.h>
+  #include <stdlib.h>    // malloc, free 함수가 선언된 헤더 파일
+  
+  struct Point2D {
+      int x;
+      int y;
+  };
+  
+  int main()
+  {
+      struct Point2D *p[3];    // 크기가 3인 구조체 포인터 배열 선언
+  
+      // 구조체 포인터 배열 전체 크기에서 요소(구조체 포인터)의 크기로 나눠서 요소 개수를 구함
+      for (int i = 0; i < sizeof(p) / sizeof(struct Point2D *); i++)    // 요소 개수만큼 반복
+      {
+          p[i] = malloc(sizeof(struct Point2D));    // 각 요소에 구조체 크기만큼 메모리 할당
+      }
+  	for (int i = 0; i < sizeof(p) / sizeof(struct Point2D *); i++)    // 요소 개수만큼 반복
+      {
+          free(p[i]);    // 각 요소의 동적 메모리 해제
+      }
+  
+      return 0;
+  }
+  ```
+
+---
+
 
 
 
