@@ -1944,6 +1944,84 @@
 
 ---
 
+- **구조체 비트 필드**
+
+  - ☆*복습! 1byte = 8bit*☆
+
+  - 구조체 비트 필드를 사용하면 구조체 멤버를 비트 단위로 저장할 수 있다. 특히 CPU나 기타 칩의 플래그를 다루는 저수준(low level) 프로그래밍을 할 때 기본 자료형보다 더 작은 비트 단위로 값을 가져오거나 저장하는 경우가 많으므로 구조체 비트 필드가 유용하게 사용된다.
+
+  - C99 표준에서는 비트 필드로 사용할 수 있는 자료형을 _Bool, signed int, unsigned int, int로 규정하고 있지만 대부분의 컴파일러에서는 모든 정수 자료형을 사용할 수 있다. 보통은 비트 필드에 unsigned 자료형을 주로 사용한다. 실수 자료형은 비트 필드로 사용할 수 없다.
+
+  - 비트 필드는 다음과 같이 멤버를 선언할 떄 : (콜론) 뒤에 비트 수를 지정해 주면 된다.
+
+    ```c
+    struct 구조체이름 
+    {
+        정수자료형 멤버이름 : 비트수;
+    }
+    ```
+
+  - 예시 코드를 보자
+
+    ```c
+    #include <stdio.h>
+    
+    struct Flags {
+        unsigned int a : 1;     // a는 1비트 크기
+        unsigned int b : 3;     // b는 3비트 크기
+        unsigned int c : 7;     // c는 7비트 크기
+    };
+    
+    int main()
+    {
+        struct Flags f1;    // 구조체 변수 선언
+    
+        f1.a = 1;      //   1: 0000 0001, 비트 1개
+        f1.b = 15;     //  15: 0000 1111, 비트 4개
+        f1.c = 255;    // 255: 1111 1111, 비트 8개
+    
+        printf("%u\n", f1.a);    //   1:        1, 비트 1개만 저장됨
+        printf("%u\n", f1.b);    //   7:      111, 비트 3개만 저장됨
+        printf("%u\n", f1.c);    // 127: 111 1111, 비트 7개만 저장됨
+    
+        return 0;
+    }
+    ```
+
+    printf에서 %u로 각 멤버를 출력해보면 앞에서 할당한 값과 다른 값이 나오는 것을 볼 수 있다. 비트 필드에는 지정한 비트 수만큼 저장되며 나머지 비트는 버려지기 때문이다. 각 멤버는 최하위 비트(Least Significant Bit, LSB)부터 차례대로 배치된다.
+
+    ![구조체 비트 필드의 구성](https://dojang.io/pluginfile.php/536/mod_page/content/26/unit56-2.png)
+
+    다음과 같이 비트 필드의 멤버를 선언하는 자료형보다 큰 비트 수는 지정할 수 없다.
+
+    ```c
+    struct Flags {
+        unsigned int a : 37;    // 컴파일 에러. unsigned int보다 큰 비트 수는 지정할 수 없음
+        unsigned int b : 3;
+        unsigned int c : 7;
+    };
+    ```
+
+    CPU나 칩에 값을 설정할 때는 모든 비트를 묶어서 한꺼번에 저장한다. 
+
+    ![비트 필드와 공용체](https://dojang.io/pluginfile.php/537/mod_page/content/21/unit56-3.png)
+
+    ```c
+    struct Flags {
+        union {    // 익명 공용체
+            struct {    // 익명 구조체
+                unsigned short a : 3;    // a는 3비트 크기
+                unsigned short b : 2;    // b는 2비트 크기
+                unsigned short c : 7;    // c는 7비트 크기
+                unsigned short d : 4;    // d는 4비트 크기
+            };                           // 합계 16비트
+            unsigned short e;    // 2바이트(16비트)
+        };
+    };
+    ```
+
+---
+
 
 
 
