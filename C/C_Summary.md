@@ -1520,7 +1520,63 @@
 
 ---
 
+- **구조체 포인터**
 
+  - 구조체도 동적할당을 할 수 있다.
+
+    - struct 구조체이름 \*포인터이름 = malloc(sizeof(struct 구조체이름));
+    - 또는 구조체별칭 *포인터이름 = malloc(sizeof(구조체별칭));
+
+    ```c
+    struct Person *p1 = malloc(sizeof(struct Person));    // 구조체 포인터 선언, 메모리 할당
+    Person *p2 = malloc(sizeof(Person));
+    ```
+
+  - 구조체의 멤버가 포인터일 때 역참조
+
+    구조체의 멤버가 포인터일 때 역참조를 하려면 맨 앞에 &#42;를 붙이면 된다. 이 떄 구조체 변수 앞에 &#42;가 붙어있더라도 멤버의 역참조이지 구조체 변수의 역참조가 아니다
+
+    - &#42;구조체변수.멤버
+    - &#42;구조체포인터->멤버
+
+    ```c
+    struct Data {
+        char c1;
+        int *numPtr;    // 포인터
+    };
+    
+    int main()
+    {
+        int num1 = 10;
+        struct Data d1;    // 구조체 변수
+        struct Data *d2 = malloc(sizeof(struct Data));    // 구조체 포인터에 메모리 할당
+    
+        d1.numPtr = &num1;
+        d2->numPtr = &num1;
+    
+        printf("%d\n", *d1.numPtr);     // 10: 구조체의 멤버를 역참조
+        printf("%d\n", *d2->numPtr);    // 10: 구조체 포인터의 멤버를 역참조
+    }
+    ```
+
+    ![구조체 멤버가 포인터일 때 역참조](https://dojang.io/pluginfile.php/482/mod_page/content/31/4901.png)
+
+  - 구조체 포인터를 역참조
+
+    - (\*구조체포인터).멤버
+    - &#42;(&#42;구조체포인터).멤버
+
+    ```c
+    d2->c1 = 'a';
+    printf("%c\n", (*d2).c1);      //  a: 구조체 포인터를 역참조하여 c1에 접근
+                                   // d2->c1과 같음
+    printf("%d\n", *(*d2).numPtr); // 10: 구조체 포인터를 역참조하여 numPtr에 접근한 뒤 다시 역참조
+                                   // *d2->numPtr과 같음
+    ```
+
+    ![구조체 포인터 역참조](https://dojang.io/pluginfile.php/482/mod_page/content/31/4902.png)
+
+    
 
 
 
