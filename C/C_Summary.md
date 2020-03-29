@@ -2022,6 +2022,137 @@
 
 ---
 
+- **열거형**
+
+  열거형은 정수형 상수에 이름을 붙여서 코드를 이해하기 쉽게 해준다. enum키워드를 사용하며 사용 형식은 구조체나 공용체와 유사하다.
+
+  ```c
+  enum 열거형이름
+  {
+      값 1 = 초기값,
+      값 2,
+      값 3
+  };
+  ```
+
+  먼저 enum 키워드 뒤에 열거형 이름을 지정해주고 { } 안에 값을 나열한다. 여기서 각 값들은 , (콤마) 로 구분하며 = 를 사용하여 값을 할당한다. 마지막에 세미콜론을 붙여준다.
+
+  - 열거형의 값은 처음에만 할당해주면 그 아래에 오는 값들은 1씩 증가하면서 자동으로 할당된다. (아무 값도 할당하지 않으면 0부터 시작). 따라서 처음에 오는 Sunday에 0을 할당하면 Monday = 1, Tuesday = 2, Wednesday = 3이 된다.
+
+    ```c
+    enum DayOfWeek {    // 열거형 정의
+        Sunday = 0,         // 초깃값 할당
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday
+    };
+    ```
+
+  - 정의한 열거형을 사용하려면 열거형 변수를 선언해야 한다.
+
+    ```c
+    enum DayOfWeek week;    // 열거형 변수 선언
+    ```
+
+  - 연속되지 않은 불규칙한 값을 사용하려면 모든 열거형 값에 정수를 할당하면 된다.
+
+    ```c
+    enum Value {
+        ValueA = 1,
+        ValueB = 3,
+        ValueC = 7,
+        ValueD = 11
+    };
+    ```
+
+  - typedef, 익명 열거형, 정의하는 동시에 변수 선언하기 모두 사용 가능하다.
+
+  - 열거형은 switch 분기문을 사용할 때 유용하다. (Game skill code)
+
+    ```c
+    #include <stdio.h>
+    
+    enum LuxSkill {
+        LightBinding = 1,
+        PrismaticBarrier,
+        LucentSingularity,
+        FinalSpark
+    };
+    
+    int main()
+    {
+        enum LuxSkill skill;    // 열거형 변수 선언
+    
+        skill = LightBinding;    // 열거형 값 할당
+    
+        switch (skill)
+        {
+        case LightBinding:         // 열거형 값이 LightBinding일 때
+            printf("LightBinding\n");
+            break;
+        case PrismaticBarrier:     // 열거형 값이 PrismaticBarrier일 때
+            printf("PrismaticBarrier\n");
+            break;
+        case LucentSingularity:    // 열거형 값이 LucentSingularity일 때
+            printf("LucentSingularity\n");
+            break;
+        case FinalSpark:           // 열거형 값이 FinalSpark일 때
+            printf("FinalSpark\n");
+            break;
+        default:
+            break;
+        }
+    
+        return 0;
+    }
+    ```
+
+  - for 반복문에서 사용할 수도 있다. (일 ~ 토 알람 code)
+
+    ```c
+    #include <stdio.h>
+    
+    typedef enum _DayOfWeek {    // 열거형 이름은 _DayOfWeek
+        Sunday = 0,                  // 초깃값을 0으로 할당
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday,
+        DayOfWeekCount               // 열거형 값의 개수를 나타내는 항목 추가
+    } DayOfWeek;                 // typedef를 사용하여 열거형 별칭을 DayOfWeek로 정의
+    
+    int main()
+    {
+        // 초깃값은 Sunday, i가 DayOfWeekCount보다 작을 때까지만 반복
+        for (DayOfWeek i = Sunday; i < DayOfWeekCount; i++) 
+        {
+            printf("%d\n", i);
+        }
+    
+        return 0;
+    }
+    ```
+
+    ```c
+    // 출력
+    0
+    1
+    2
+    3
+    4
+    5
+    6
+    ```
+
+    DayOfWeekCount는 열거형 값의 개수를 나타내는 항목이다. (보통 이름을 지을 때 개수 또는 최대치를 뜻하는 Count, _COUNT, Max, _MAX, Maximum 등을 조합한다.)
+
+---
+
 
 
 
