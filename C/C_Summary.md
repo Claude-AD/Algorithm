@@ -2349,7 +2349,61 @@
 
 ---
 
+- **함수 반환값으로 void 포인터 리턴**
 
+  - void 포인터는 다양한 형태의 포인터에 넣을 수 있는 특성을 이용하여 자료형에 구애받지 않는 함수를 만들 수 있다.
+
+    ```c
+    void *allocMemory()    // void 포인터를 반환하는 allocMemory 함수 정의
+    {
+        void *ptr = malloc(100);    // 100바이트만큼 동적 메모리 할당
+    
+        return ptr;    // void 포인터 반환
+    }
+    
+    int main()
+    {
+        char *s1 = allocMemory();       // void 포인터를 char 포인터에 넣어서 문자열처럼 사용
+        strcpy(s1, "Hello, world!");    // s1에 Hello, world! 복사
+        printf("%s\n", s1);             // Hello, world!
+        free(s1);                       // 동적 메모리 해제
+    
+        int *numPtr1 = allocMemory();   // void 포인터를 int 포인터에 넣어서 정수 배열처럼 사용
+        numPtr1[0] = 10;                // 첫 번째 요소에 10 저장
+        numPtr1[1] = 20;                // 두 번째 요소에 20 저장
+        printf("%d %d\n", numPtr1[0], numPtr1[1]); // 10 20
+        free(numPtr1);                  // 동적 메모리 해제
+    
+        return 0;
+    }
+    ```
+
+    함수의 리턴값을 문자열로도 사용할 수 있고 정수 배열로도 사용할 수 있다.
+
+---
+
+- **함수의 리턴값으로 구조체를 반환할 때**
+
+  여러 항목을 한번에 리턴 값으로 받고 싶을 때는 구조체로 리턴값을 받으면 된다.
+
+  ```c
+  struct Person *allocPerson()    // Person 구조체 포인터를 반환하는 allocPerson 함수 정의
+  {
+      struct Person *p = malloc(sizeof(struct Person));    // 구조체 포인터에 동적 메모리 할당;
+  
+      strcpy(p->name, "홍길동");
+      p->age = 30;
+      strcpy(p->address, "서울시 용산구 한남동");
+  
+      return p;    // 구조체 포인터 반환
+  }
+  ```
+
+  구조체를 직접 반환하는 것 보다 포인터로 반환하는 것이 더 공간을 효율적으로 사용할 수 있다.
+
+  공용체와 열거형도 마찬가지로 리턴값으로 받을 수 있다.
+
+---
 
 
 
