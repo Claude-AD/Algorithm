@@ -2438,6 +2438,110 @@
 
 ---
 
+- **포인터 매개변수**
+
+  포인터가 아닌 매개변수는 값을 함수 안으로 전달해 주기만 할 뿐 함수안에서 어떤일이 일어나든지 변수에는 영향을 미치지 않는다.
+
+  ![매개변수와 변수](https://dojang.io/pluginfile.php/614/mod_page/content/31/unit63-3.png)
+
+  아무리 swapNumber를 호출해봐야 num1과 num2의 값은 바뀌지 않는다.
+
+  그러나 포인터를 매개변수로 사용하여 변수의 메모리 주소를 함수에 전달하면 함수 안에서는 메모리 주소에 접근하여 값을 저장할 수 있다.
+
+  ![포인터 매개변수](https://dojang.io/pluginfile.php/614/mod_page/content/31/unit63-4.png)
+
+  이처럼 매개변수를 포인터로 사용하면 함수 바깥으로 여러 개의 값을 전달할 수 있다. scanf 함수도 같은 맥락이다. 우리가 scanf함수에 &연산자로 변수의 메모리 주소를 넣는 이유는 여러 개의 값을 함수 바깥으로 가져오기 위함이다.
+
+  ```c
+  int num1, num2, num3;
+  scanf("%d %d %d", &num1, &num2, &num3); // scanf에서 값을 3개 가져옴
+  									// (scanf는 바깥으로 값을 3개 전달)
+  ```
+
+  - C 언어로 작성된 여러 프로그램들을 보면 매개변수 부분에 IN, OUT, in, out 등의 단어가 추가로 붙어있는 경우가 있다. 
+
+    ```c
+    //            ↓ 일반적인 매개변수
+    void GetValue(IN int a, OUT int *b)
+    { //                     ↑ 값이 바깥으로 나오는 매개변수
+        printf("%d\n", a);
+    
+        *b = 10;
+    }
+    ```
+
+    IN은 함수 안으로 들어가기만 하는 일반적인 매개변수라는 표시이고, OUT은 함수 바깥으로 값이 나오는 매개변수라는 표시다. IN, OUT은 C 언어의 문법은 아니지만 전처리기를 활용하여 사람만 알아볼 수 있도록 정의한 것이다. (컴파일 할 때는 아무런 영향을 주지 않는다.)
+
+  - void 포인터 매개변수로 자료형에 상관없이 매개변수를 받을 수 있다. (어떤 자료형으로 형변환 해야되는지 알 수 없으므로 보통 열거형을 사용하여 자료형을 정해준다.)
+
+    ```c
+    void swapValue(void *ptr1, void *ptr2, enum TYPE t)    // 반환값 없음, void 포인터 매개변수 두 개와
+    {                                                      // 변수의 자료형을 알려줄 열거형을 받음
+        switch (t)
+        {
+        case TYPE_CHAR:    // 문자면 char *로 변환한 뒤 역참조하여 값을 서로 바꿈
+        {
+            char temp;
+            temp = *(char *)ptr1;
+            *(char *)ptr1 = *(char *)ptr2;
+            *(char *)ptr2 = temp;
+            break;
+        }
+        case TYPE_INT:     // 정수면 int *로 변환한 뒤 역참조하여 값을 서로 바꿈
+        {
+            int temp;
+            temp = *(int *)ptr1;
+            *(int *)ptr1 = *(int *)ptr2;
+            *(int *)ptr2 = temp;
+            break;
+        }
+        case TYPE_FLOAT:   // 실수면 float *로 변환한 뒤 역참조하여 값을 서로 바꿈
+        {
+            float temp;
+            temp = *(float *)ptr1;
+            *(float *)ptr1 = *(float *)ptr2;
+            *(float *)ptr2 = temp;
+            break;
+        }
+        }
+    }
+    ```
+
+  - 함수에 포인터를 가져와서 연산하고 싶다면 매개변수로 이중 포인터를 사용하면 된다.
+
+    ```c
+    #include <stdio.h>
+    #include <stdlib.h>    // malloc, free 함수가 선언된 헤더 파일
+    
+    void allocMemory(void **ptr, int size)    // 반환값 없음, void 이중 포인터 매개변수 지정
+    {
+        *ptr = malloc(size);    // void **ptr을 역참조하여 void *ptr에 메모리 할당
+    }
+    
+    int main()
+    {
+        long long *numPtr;
+    
+        // 단일 포인터 long long *numPtr의 메모리 주소는 long long **와 같음, 할당할 크기도 넣음 
+        allocMemory(&numPtr, sizeof(long long));
+    
+        *numPtr = 10;
+        printf("%lld\n", *numPtr);
+    
+        free(numPtr);    // 동적 메모리 해제
+    
+        return 0;
+    }
+    ```
+
+    ![double pointer parameter](https://dojang.io/pluginfile.php/617/mod_page/content/22/unit63-5.png)
+
+---
+
+
+
+
+
 
 
 
