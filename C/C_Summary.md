@@ -2824,7 +2824,152 @@
 
 ---
 
+- **VIsual Studio에서 컴파일할 때 C4703 에러가 발생한다면...**
 
+  Uninitialized memory... 오류이므로 NULL값으로 초기화를 해주면 된다.
+
+  ex)
+
+  ```c
+  int (*fp)(int *, int *) = NULL;
+  ```
+
+---
+
+- **함수 포인터 배열**
+
+  다음과 같이 선언한다.
+
+  ```c
+  // int형 반환값, int형 매개변수 두 개가 있는 함수 포인터 배열 선언
+  //↓ 반환값 자료형
+  int (*fp[4])(int, int);    // ← 매개변수 자료형
+  //    ↑   ↖ 크기가 4인 배열
+  // 함수 포인터 이름
+  ```
+
+  - 함수 포인터 배열을 선언하는 동시에 초기화하기
+
+    함수 포인터 배열도 { } (중괄호)를 사용하여 초기화 할 수 있다.
+
+    ```c
+    int (*fp[4])(int, int) = { add, sub, mul, div };    // 중괄호로 함수의 메모리 주소를 저장
+    ```
+
+  - 다음 코드로 사용법을 알아보자.
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS    // scanf 보안 경고로 인한 컴파일 에러 방지
+    #include <stdio.h>
+    #include <string.h>
+    
+    int add(int a, int b)
+    {
+        return a + b;
+    }
+    
+    int sub(int a, int b)
+    {
+        return a - b;
+    }
+    
+    int mul(int a, int b)
+    {
+        return a * b;
+    }
+    
+    int div(int a, int b)
+    {
+        return a / b;
+    }
+    
+    int main()
+    {
+        int funcNumber;    // 함수 번호
+        int num1, num2;
+        int (*fp[4])(int, int);    // int형 반환값, int형 매개변수 두 개가 있는 함수 포인터 배열 선언
+    
+        fp[0] = add;    // 첫 번째 요소에 덧셈 함수의 메모리 주소 저장
+        fp[1] = sub;    // 두 번째 요소에 뺄셈 함수의 메모리 주소 저장
+        fp[2] = mul;    // 세 번째 요소에 곱셈 함수의 메모리 주소 저장
+        fp[3] = div;    // 네 번째 요소에 나눗셈 함수의 메모리 주소 저장
+    
+        printf("함수 번호와 계산할 값을 입력하세요: ");
+        scanf("%d %d %d", &funcNumber, &num1, &num2);    // 함수 번호와 계산할 값을 입력받음
+    
+        printf("%d\n", fp[funcNumber](num1, num2));    // 함수 포인터 배열을 인덱스로 접근하여 함수 호출
+    
+        return 0;
+    }
+    ```
+
+  - 배열 뿐만 아니라 구조체 멤버, 함수 매개변수, 반환값으로도 사용 할 수 있다. 이 때 나머지는 같으나 반환값으로 사용할 때에는 문법이 조금 다르다.
+
+    ```c
+    //↓ 함수 포인터의 반환값 자료형
+    int (*getAdd())(int, int)     // 함수 포인터를 반환값으로 지정
+    { //    ↑         ↑ 함수 포인터의 매개변수 자료형
+      // 함수 이름
+        return add;    // add 함수의 메모리 주소를 반환
+    }
+    ```
+
+    이 때, typedef를 사용하면 그냥 자료형 처럼 사용하면 되므로 매우 편리하다.
+
+    ```c
+    //       ↓ 반환값 자료형
+    typedef int (*FP)(int, int);    // fp를 함수 포인터 별칭으로 정의
+    //            ↑      ↖ 매개변수 자료형
+    //     함수 포인터 별칭
+    ```
+
+    ```c
+    FP getAdd()    // 함수 포인터 별칭을 반환값으로 지정
+    {
+        return add;     // add 함수의 메모리 주소를 반환
+    }
+    ```
+
+    ```c
+    #include <stdio.h>
+    
+    int add(int a, int b)    // int형 반환값, int형 매개변수 두 개
+    {
+        return a + b;
+    }
+    
+    typedef int (*FP)(int, int);    // FP를 함수 포인터 별칭으로 정의
+    
+    struct Calc {
+        FP fp;   // 함수 포인터 별칭을 구조체 멤버 자료형으로 사용
+    };
+    
+    void executer(FP fp)    // 함수 포인터 별칭을 매개변수 자료형으로 사용
+    {
+        printf("%d\n", fp(70, 80));
+    }
+    
+    int main()
+    {
+        FP fp1;      // 함수 포인터 별칭으로 변수 선언
+        fp1 = add;
+        printf("%d\n", fp1(10, 20));     // 30
+    
+        FP fp[10];   // 함수 포인터 별칭으로 배열 선언
+        fp[0] = add;
+        printf("%d\n", fp[0](30, 40));   // 70
+    
+        struct Calc c;
+        c.fp = add;
+        printf("%d\n", c.fp(50, 60));   // 110
+        
+        executer(add);    // 150: executer를 호출할 때 add 함수의 메모리 주소를 전달
+    
+        return 0;
+    }
+    ```
+
+---
 
 
 
