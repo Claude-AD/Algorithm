@@ -1,4 +1,4 @@
-# C 내용 정리
+# 마지막으로 va_end 매크로를 사용하여 ap를 NULL로 초기화합니다.C 내용 정리
 
 본 문서는 C언어 코딩 도장이라는 책을 공부하면서 C에 대해 새롭게 알게 된 내용들을 정리한 문서이다. 
 
@@ -2618,6 +2618,161 @@
       ```
 
 ---
+
+- **함수에서 가변 인자 사용하기**
+
+  매번 함수에 들어가는 인수(argument)의 개수가 변하는 것을 가변 인자(variable argument)라고 한다. ex) printf, scanf ... etc
+
+  - 함수에서 가변 인자를 정의할 때는 고정 매개변수가 한 개 이상 있어야 하며 고정 매개변수 뒤에 ...을 붙여 매개변수의 개수가 정해지지 않았다는 표시를 해준다.
+
+    ```c
+    반환값자료형 함수이름(자료형 고정매개변수, ...)
+    {
+    }
+    ```
+
+    다음 코드를 보자.
+
+    ```c
+    #include <stdio.h>
+    #include <stdarg.h>    // va_list, va_start, va_arg, va_end가 정의된 헤더 파일
+    
+    void printNumbers(int args, ...)    // 가변 인자의 개수를 받음, ...로 가변 인자 설정
+    {
+        va_list ap;    // 가변 인자 목록 포인터
+    
+        va_start(ap, args);    // 가변 인자 목록 포인터 설정
+        for (int i = 0; i < args; i++)    // 가변 인자 개수만큼 반복
+        {
+            int num = va_arg(ap, int);    // int 크기만큼 가변 인자 목록 포인터에서 값을 가져옴
+                                          // ap를 int 크기만큼 순방향으로 이동
+            printf("%d ", num);           // 가변 인자 값 출력
+        }
+        va_end(ap);    // 가변 인자 목록 포인터를 NULL로 초기화
+    
+        printf("\n");    // 줄바꿈
+    }
+    
+    int main()
+    {
+        printNumbers(1, 10);                // 인수 개수 1개
+        printNumbers(2, 10, 20);            // 인수 개수 2개
+        printNumbers(3, 10, 20, 30);        // 인수 개수 3개
+        printNumbers(4, 10, 20, 30, 40);    // 인수 개수 4개
+    
+        return 0;
+    }
+    ```
+
+    ...으로 들어온 가변 인자를 사용하려면 다음과 같은 `<stdarg.h>`헤더 파일에 정의된 가변 인자 매크로를 이용해야 한다.
+
+    - va_list : 가변 인자 목록. 가변 인자의 메모리 주소를 저장하는 포인터이다.
+    - va_start : 가변 인자를 가져올 수 있도록 포인터를 설정한다.
+    - va_arg : 가변 인자 포인터에서 특정 자료형 크기만큼 값을 가져온다.
+    - va_end : 가변 인자 처리가 끝났을 때 포인터를 NULL로 초기화 한다.
+
+    함수 안에서는 va_start 매크로에 가변 인자 목록 포인터 ap와 가변 인자 개수 args를 넣어 가변 인자를 가져올 수 있도록 준비한다.
+
+    ```c
+    va_list ap;    // 가변 인자 목록 포인터
+    
+    va_start(ap, args);    // 가변 인자 목록 포인터 설정
+    ```
+
+    만약 가변 인자가 4개 들어있는 printNumbers(4, 10, 20, 30, 40);를 호출한 뒤 va_start 매크로를 실행하면 다음과 같은 모양이 된다.
+
+    ![va_start로 ap 준비](https://dojang.io/pluginfile.php/641/mod_page/content/29/unit66-1.png)
+    이제 반복문으로 가변 인자 개수만큼 반복하면서 va_arg 매크로로 값을 가져오면 된다. 이때 va_arg에는 가변 인자의 자료형을 지정해준다.
+
+    ```c
+    for (int i = 0; i < args; i++)    // 가변 인자 개수만큼 반복
+    {
+        int num = va_arg(ap, int);    // int 크기만큼 가변 인자 목록 포인터에서 값을 가져옴
+                                      // ap를 int 크기만큼 순방향으로 이동
+        printf("%d ", num);           // 가변 인자 값 출력
+    }
+    ```
+
+    int num = va_arg(ap, int);를 실행하면 현재 ap에서 4바이트(int 크기)만큼 역참조하여 값을 가져온 뒤 ap를 4바이트만큼 순방향으로 이동시킨다.
+
+    ![va_arg로 ap에서 값을 가져온 뒤 포인터 이동](https://dojang.io/pluginfile.php/641/mod_page/content/29/unit66-2.png)
+
+    마지막으로 va_end 매크로를 사용하여 ap를 NULL로 초기화한다.
+
+    ```c
+    va_end(ap);    // 가변 인자 목록 포인터를 NULL로 초기화
+    ```
+
+  - 그렇다면 각자 자료형이 다른 가변 인자는 어떻게 처리할까? switch를 함꼐 사용하면 된다.
+
+    ```c
+    #include <stdio.h>
+    #include <stdarg.h>    // va_list, va_start, va_arg, va_end가 정의된 헤더 파일
+    
+    void printValues(char *types, ...)    // 가변 인자의 자료형을 받음, ...로 가변 인자 설정
+    {
+        va_list ap;    // 가변 인자 목록
+        int i = 0;
+    
+        va_start(ap, types);        // types 문자열에서 문자 개수를 구해서 가변 인자 포인터 설정
+        while (types[i] != '\0')    // 가변 인자 자료형이 없을 때까지 반복
+        {
+            switch (types[i])       // 가변 인자 자료형으로 분기
+            {
+            case 'i':                                // int형일 때
+                printf("%d ", va_arg(ap, int));      // int 크기만큼 값을 가져옴
+                                                     // ap를 int 크기만큼 순방향으로 이동
+                break;
+            case 'd':                                // double형일 때
+                printf("%f ", va_arg(ap, double));   // double 크기만큼 값을 가져옴
+                                                     // ap를 double 크기만큼 순방향으로 이동
+                break;
+            case 'c':                                // char형 문자일 때
+                printf("%c ", va_arg(ap, char));     // char 크기만큼 값을 가져옴
+                                                     // ap를 char 크기만큼 순방향으로 이동
+                break;
+            case 's':                                // char *형 문자열일 때
+                printf("%s ", va_arg(ap, char *));   // char * 크기만큼 값을 가져옴
+                                                     // ap를 char * 크기만큼 순방향으로 이동
+                break;
+            default:
+                break;
+            }
+            i++;
+        }
+        va_end(ap);    // 가변 인자 포인터를 NULL로 초기화
+    
+        printf("\n");    // 줄바꿈
+    }
+    
+    int main()
+    {
+        printValues("i", 10);                                       // 정수
+        printValues("ci", 'a', 10);                                 // 문자, 정수
+        printValues("dci", 1.234567, 'a', 10);                      // 실수, 문자, 정수
+        printValues("sicd", "Hello, world!", 10, 'a', 1.234567);    // 문자열, 정수, 문자, 실수
+    
+        return 0;
+    }
+    ```
+
+    va_start 매크로는 문자열을 넣으면 문자의 개수를 구해서 포인터를 설정해준다.
+
+  - GCC에서 va_arg
+
+    Visual Studio에서는 va_arg(ap, char)처럼 char를 사용할 수 있지만 GCC에서는 char형 문자일 때 va_arg 매크로에 char대신 int를 사용해야 한다. 즉, GCC에서 가변 인자로 받은 값의 자료형이 int 보다 작다면 int로, float이라면 double로 지정해야한다.
+
+    - char, bool -> int
+    - short -> int
+    - float -> double
+
+    GCC쪽이 C 언어 표준이며 Visual Studio에서는 예외적으로 허용하고 있는 상황이다.
+
+---
+
+
+
+
 
 
 
