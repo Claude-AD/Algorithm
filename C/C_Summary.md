@@ -2905,31 +2905,35 @@
 
   - 배열 뿐만 아니라 구조체 멤버, 함수 매개변수, 반환값으로도 사용 할 수 있다. 이 때 나머지는 같으나 반환값으로 사용할 때에는 문법이 조금 다르다.
 
+    - ```c
+    함수포인터반환값자료형 (*함수이름(매개변수자료형 매개변수))(함수포인터매개변수자료형1, 함수포인터매개변수자료형2) { }
+      ```
+    
     ```c
     //↓ 함수 포인터의 반환값 자료형
     int (*getAdd())(int, int)     // 함수 포인터를 반환값으로 지정
     { //    ↑         ↑ 함수 포인터의 매개변수 자료형
-      // 함수 이름
+  // 함수 이름
         return add;    // add 함수의 메모리 주소를 반환
-    }
+}
     ```
-
+    
     이 때, typedef를 사용하면 그냥 자료형 처럼 사용하면 되므로 매우 편리하다.
-
+    
     ```c
     //       ↓ 반환값 자료형
-    typedef int (*FP)(int, int);    // fp를 함수 포인터 별칭으로 정의
+typedef int (*FP)(int, int);    // fp를 함수 포인터 별칭으로 정의
     //            ↑      ↖ 매개변수 자료형
     //     함수 포인터 별칭
     ```
-
+    
     ```c
     FP getAdd()    // 함수 포인터 별칭을 반환값으로 지정
-    {
+{
         return add;     // add 함수의 메모리 주소를 반환
     }
     ```
-
+    
     ```c
     #include <stdio.h>
     
@@ -2971,15 +2975,380 @@
 
 ---
 
+- **주목할 만한 함수포인터 예제**
 
+  표준 입력으로 3명의 인적 정보가 입력됩니다(홀수 번째는 이름, 짝수 번째는 나이). 다음 소스 코드에서 getPrintFunc 함수를 작성하여 입력된 인적 정보가 각 줄에 출력되게 만드세요.
 
+  ```c
+  #define _CRT_SECURE_NO_WARNINGS
+  #include <stdio.h>
+  
+  struct Person {
+      char name[30];
+      int age;
+      void (*print)(struct Person *);
+  };
+  
+  void print(struct Person *p)
+  {
+      printf("%s %d\n", p->name, p->age);
+  }
+   
+  void executer(void (*fp[])(struct Person *), struct Person p[], int count)
+  {
+      for (int i = 0; i < count; i++)
+      {
+          fp[i](&p[i]);
+      }
+  }
+  
+  void (*getPrintFunc(struct Person* p))(struct Person*)
+  {
+      return p->print;
+  }
+  
+  int main()
+  {
+      struct Person p[3];
+      p[0].print = print;
+      p[1].print = print;
+      p[2].print = print;
+  
+      scanf("%s %d %s %d %s %d",
+          p[0].name,& p[0].age,
+          p[1].name,& p[1].age,
+          p[2].name,& p[2].age
+      );
+  
+      void (*fp[3])(struct Person *);
+  
+      for (int i = 0; i < sizeof(p) / sizeof(struct Person); i++)
+      {
+          fp[i] = getPrintFunc(&p[i]);
+      }
+  
+      executer(fp, p, sizeof(p) / sizeof(struct Person));
+  
+      return 0;
+  }
+  ```
 
+  ```c
+  // 입력
+  홍대용 49 정약용 18 박제가 30
+  ```
 
+  ```c
+  // 출력
+  홍대용 49
+  정약용 18
+  박제가 30
+  ```
 
+---
 
+- **파일에 서식 지정해서 문자열 쓰기**
 
+  파일에 문자열을 쓸 때는 먼저 fopen 함수로 파일을 열어서 파일 포인터를 얻은 뒤 fprintf 함수를 사용한다.
 
+  - `<stdio.h>`헤더 파일에 선언되어 있다.
 
+  - FILE *포인터이름 = fopen(파일명, 파일모드);
 
+    - **FILE \*fopen(char const \*_FileName, char const \*_Mode);**
+    - 성공하면 파일 포인터를 반환, 실패하면 NULL을 반환
 
+  - fprintf(파일포인터, 서식, 값1, 값2, ...);
+
+    - **int fprintf(FILE \* const _Stream, char const \* const _Format, ...);**
+
+    - 성공하면 쓴 문자열의 길이를 반환, 실패하면 음수를 반환
+
+    - stdout을 사용하면 printf처럼 사용이 가능하다.
+
+      ```c
+      fprintf(stdout, "%s %d\n", "Hello", 100); // Hello 100: 서식을 지정하여 화면(stdout)에 문자열 출력
+      ```
+
+  - fclose(파일포인터);
+
+    - **int fclose(FILE \*_stream);**
+    - 성공하면 0을 반환, 실패하면 EOF(-1)를 반환
+
+  ```c
+  #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+  #include <stdio.h>     // fopen, fprintf, fclose 함수가 선언된 헤더 파일
+  
+  int main()
+  {
+      FILE *fp = fopen("hello.txt", "w");     // hello.txt 파일을 쓰기 모드(w)로 열기.
+                                              // 파일 포인터를 반환
+  
+      fprintf(fp, "%s %d\n", "Hello", 100);   // 서식을 지정하여 문자열을 파일에 저장
+  
+      fclose(fp);    // 파일 포인터 닫기
+  
+      return 0;
+  }
+  ```
+
+  - 파일 모드
+
+    | 파일모드 |      기능       |                             설명                             |
+    | :------: | :-------------: | :----------------------------------------------------------: |
+    |   "r"    |    읽기전용     |  파일을 읽기 전용으로 연다. 단, 파일이 반드시 있어야 한다.   |
+    |   "w"    |    쓰기전용     |   새 파일을 생성한다. 만약 파일이 있으면 내용을 덮어쓴다.    |
+    |   "a"    |      추가       | 파일을 열어 파일 끝에 값을 이어쓴다. 만약 파일이 없으면 파일을 생성한다. |
+    |   "r+"   |    읽기/쓰기    | 파일을 읽기/쓰기용으로 연다. 단, 파일이 반드시 있어야 하며 파일이 없으면 NULL을 반환한다. |
+    |   "w+"   |    읽기/쓰기    | 파일을 읽기/쓰기용으로 연다. 파일이 없으면 파일을 생성하고, 파일이 있으면 내용을 덮어쓴다. |
+    |   "a+"   | 추가(읽기/쓰기) | 파일을 열어 파일 끝에 값을 이어쓴다. 만약 파일이 없으면 파일을 생성한다. 읽기는 파일의 모든 구간에서 가능하지만, 쓰기는 파일의 끝에서만 가능하다. |
+    |    t     |   텍스트모드    | 파일을 읽거나 쓸 때 개행문자 \n과 \r\n을 서로 변환한다. ^Z(Ctrl + Z)를 파일의 끝으로 인식하므로 ^Z까지만 파일을 읽는다. |
+    |    b     |  바이너리모드   |         파일의 내용을 그대로 읽고, 값을 그대로 쓴다.         |
+
+    파일 모드는 보통 "rb", "rt", "w+b", "w+t"와 같이 읽기/쓰기 모드와 텍스트/바이너리 모드를 조합해서 사용한다. t와 b는 단독으로 사용할 수 없다.
+
+  - 파일명과 파일 경로
+
+    fopen 함수에 파일명만 지정하면 현재 작업 디렉터리(working directory)에서 파일을 연다. 만약 fopen("hello.txt", "w")이라면 현재 작업 디렉터리 아래의 hello.txt 파일을 열게 된다. 여기서 중요한 점은 프로그램을 실행하는 방식과 위치에 따라 현재 작업 디렉터리가 바뀔 수 있다는 점이다.
+
+    - Ctrl+F5, F5로 실행했을 때: Visual Studio에 설정된 작업 디렉터리 설정을 따릅니다. 보통 .c 파일과 .vcxproj 파일이 있는 디렉터리다. 이 설정은 솔루션 탐색기에서 프로젝트 선택 > 메인 메뉴의 **프로젝트(P) > 속성(P) > 디버깅 > 작업 디렉터리**에서 바꿀 수 있다.
+    - 명령 프롬프트, 탐색기에서 실행했을 때: 소스 코드를 컴파일하면 Debug 모드일 경우 프로젝트 디렉터리 아래의 Debug 아래에 실행 파일이 생성된다. 이 상태에서 실행 파일을 직접 실행하면 실행 파일이 있는 디렉터리가 작업 디렉터리가 됩니다.
+    - 명령 프롬프트에서 실행했을 때: 실행 파일이 있는 디렉터리로 이동해서 실행 파일을 실행하는 것이 아닌 상대 경로로 실행했을 때는 현재 디렉터리가 작업 디렉터리다.(예: Debug\hello.exe처럼 실행)
+
+    fopen에는 파일이 있는 경로까지 함께 지정할 수 있다(경로에 \를 입력할 때는 \\와 같이 입력해야 한다).
+
+    - 절대 경로: fopen("c:\\project\\hello.txt", "w");
+    - 상대 경로: fopen("..\\hello.txt", "w"); 상대 경로는 작업 디렉터리를 기준으로 파일을 찾아서 열게 된다.
+
+    리눅스 및 OS X는 경로를 표현할 때 \ 대신 /를 사용한다
+
+    - fopen("/home/project/hello.txt", "w");
+
+---
+
+- **파일에서 서식 지정해서 문자열 읽기**
+
+  파일을 읽을 때도 fopen 함수로 파일을 열어서 파일 포인터를 얻은 뒤 fscanf 함수로 서식을 지정하여 파일의 내용을 읽는다.
+
+  - `<stdio.h>`헤더 파일에 선언되어 있다.
+
+  - **fscanf(파일포인터, 서식, 변수의주소1, 변수의주소2, …);**
+
+    - int fscanf(FILE \* const _Stream, char const \* const _Format, ...);
+
+    - 성공하면 읽어온 값의 개수를 반환, 실패하면 EOF(-1)를 반환
+
+    - stdin 매크로를 사용하면 scanf 처럼 사용이 가능하다.
+
+      ```c
+      char s1[10];
+      int num1;
+      fscanf(stdin, "%s %d", s1, &num1); // 서식을 지정하여 표준 입력(stdin)에서 문자열 읽기
+      ```
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+    #include <stdio.h>     // fopen, fscanf, fclose 함수가 선언된 헤더 파일
+    
+    int main()
+    {
+        char s1[10];
+        int num1;
+    
+        FILE *fp = fopen("hello.txt", "r");    // hello.txt 파일을 읽기 모드(r)로 열기.
+                                               // 파일 포인터를 반환
+    
+        fscanf(fp, "%s %d", s1, &num1);   // 서식을 지정하여 파일에서 문자열 읽기
+    
+        printf("%s %d\n", s1, num1);      // Hello 100: 파일에서 읽은 값을 출력
+    
+        fclose(fp);    // 파일 포인터 닫기
+    
+        return 0;
+    }
+    ```
+
+    - 파일 스트림
+
+      fprintf, fscanf 등의 함수의 매개변수에서 파일 포인터 부분을 보면 FILE* const _Stream와 같이 스트림(stream)이라고 되어 있다. 보통 파일 포인터를 파일 스트림이라고도 하는데 스트림은 물 등의 액체가 흐르는 것을 뜻한다. 파이프 속에 물이 계속 흘러다니는 것처럼 파일 스트림도 파일의 데이터를 연속적으로 처리한다고 해서 스트림이다.
+
+      즉, 파일에서 데이터를 처리할 때마다 매번 파일을 여는 것이 아니라 파일 스트림을 한 번 생성해서 계속 데이터를 쓰거나 가져오는 방식이다. 여기서 fopen으로 파일을 읽기 전용으로 열면 입력 스트림, 쓰기 전용으로 열면 출력 스트림, 읽기/쓰기로 열면 입출력 스트림이고 파일 모드에 따라 단방향, 양방향이 된다. 마찬가지로 stdin은 입력 스트림, stdout, stderr는 출력 스트림이다.
+
+---
+
+- **파일에 문자열 쓰기**
+
+- `<stdio.h>`헤더 파일에 선언되어 있다.
+
+- **fputs(버퍼, 파일포인터);**
+
+- - **int fputs(char const \*_Buffer, FILE \*_Stream);**
+
+  - 성공하면 음수가 아닌 값을 반환, 실패하면 EOF(-1)을 반환
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+    #include <stdio.h>     // fopen, fputs, fclose 함수가 선언된 헤더 파일
+    
+    int main()
+    {
+        FILE *fp = fopen("hello.txt", "w");    // hello.txt 파일을 쓰기 모드(w)로 열기.
+                                               // 파일 포인터를 반환
+    
+        fputs("Hello, world!", fp);   // 파일에 문자열 저장
+    
+        fclose(fp);    // 파일 포인터 닫기
+    
+        return 0;
+    }
+    ```
+
+- **fwrite(버퍼, 항목크기, 항목개수, 파일포인터);**
+
+- - **size_t fwrite(void const \*_Buffer, size_t _ElementSize, size_t _ElementCount, FILE \*_Stream);**
+
+  - 성공한 쓰기 횟수를 반환, 실패하면 지정된 쓰기 횟수보다 작은 값을 반환
+
+    ```c
+    #include <stdio.h>     // fopen, fwrite, fclose 함수가 선언된 헤더 파일
+    #include <string.h>    // strlen 함수가 선언된 헤더 파일
+    
+    int main()
+    {
+        char *s1 = "Hello, world!";
+    
+        FILE *fp = fopen("hello.txt", "w");    // hello.txt 파일을 쓰기 모드(w)로 열기.
+                                               // 파일 포인터를 반환
+    
+        fwrite(s1, strlen(s1), 1, fp);    // strlen으로 문자열의 길이를 구함.
+                                          // 문자열의 길이만큼 1번 파일에 저장
+    
+        fclose(fp);    // 파일 포인터 닫기
+    
+        return 0;
+    }
+    ```
+
+- 위의 두 함수 모두 파일 포인터 대신 stdout을 지정하면 printf처럼 사용할 수 있다.
+
+---
+
+- **파일에서 문자열 읽기**
+
+- `<stdio.h>`헤더 파일에 선언되어 있다.
+
+- **fgets(버퍼, 버퍼크기, 파일포인터);**
+
+- - **char \*fgets(char \*_Buffer, int _MaxCount, FILE \*_Stream);**
+
+  - 성공하면 읽은 문자열의 포인터를 반환, 실패하면 NULL을 반환
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+    #include <stdio.h>     // fopen, fgets, fclose 함수가 선언된 헤더 파일
+    
+    int main()
+    {
+        char buffer[20];    // 파일을 읽을 때 사용할 임시 공간
+    
+        FILE *fp = fopen("hello.txt", "r");    // hello.txt 파일을 읽기 모드로 열기.  
+                                               // 파일 포인터를 반환
+    
+        fgets(buffer, sizeof(buffer), fp);    // hello.txt에서 문자열을 읽음
+    
+        printf("%s\n", buffer);    // Hello, world!: 파일의 내용 출력
+    
+        fclose(fp);    // 파일 포인터 닫기
+    
+        return 0;
+    }
+    ```
+
+- - fgets 함수가 파일을 읽는 방식
+
+    - 버퍼 크기만큼만 읽는다. 다음과 같이 hello.txt에 문자열이 저장되어 있다고 가정하자.
+
+      ```c
+      Hello, world! Hello, world! Hello, world! Hello, world!
+      ```
+
+      이 상태에서 fgets의 버퍼 크기를 20바이트로 지정한 뒤 파일을 읽으면 딱 버퍼 크기만큼만 읽는다. 널 문자를 포함하므로 실제 문자열은 19바이트를 읽는다.
+
+      ```c
+      // 파일 열기, 닫기 생략
+      char buffer[20];
+      fgets(buffer, sizeof(buffer), fp);    // 버퍼 크기 20바이트
+      fputs(buffer, stdout);    // Hello, world! Hello: 널 문자를 포함하여 20바이트를 읽음. 문자열은 19바이트
+      ```
+
+      ```c
+      // 실행 결과
+      Hello, world! Hello
+      ```
+
+    - 하지만 다음과 같이 hello.txt에 줄바꿈(\n)이 있으면 버퍼 크기와는 상관 없이 \n까지 문자열을 읽는다.(\n도 포함)
+
+      ```c
+      Hello, wo
+      rld!
+      ```
+
+      즉, 이 상태에서 fgets로 파일을 읽으면 buffer에는 "Hello, wo\n"까지만 들어간다.
+
+      ```c
+      // 파일 열기, 닫기 생략
+      char buffer[20];
+      fgets(buffer, sizeof(buffer), fp);    // 버퍼 크기 20바이트
+      fputs(buffer, stdout);    // Hello, wo\n: \n까지 문자열을 읽음(\n도 포함)
+      ```
+
+      ```c
+      // 실행 결과
+      Hello, wo
+      ```
+
+    - fgets 함수도 stdin을 지정하면 scanf와 같이 사용할 수 있다. 다만 버퍼 크기만큼 받거나 개행문자까지만 받는다.
+
+- - **fread(버퍼, 읽기크기, 읽기횟수, 파일포인터);**
+
+  - - **size_t fread(void \*_Buffer, size_t _ElementSize, size_t _ElementCount, FILE \*_Stream);**
+
+    - 성공한 읽기 횟수를 반환, 실패하면 지정된 읽기 횟수보다 작은 값을 반환
+
+    - `<stdio.h>`헤더 파일에 선언되어 있다.
+
+      ```c
+      #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+      #include <stdio.h>      // fopen, fread, fclose 함수가 선언된 헤더 파일
+      
+      int main()
+      {
+          char buffer[20] = { 0, };    // 파일을 읽을 때 사용할 임시 공간, 미리 0으로 전부 초기화
+      
+          FILE *fp = fopen("hello.txt", "r");     // hello.txt 파일을 읽기 모드로 열기.
+                                                  // 파일 포인터를 반환
+      
+          fread(buffer, sizeof(buffer), 1, fp);   // hello.txt에서 버퍼 크기(20바이트)만큼 1번 값을 읽음
+      
+          printf("%s\n", buffer);    // Hello, world!: 파일의 내용 출력
+      
+          fclose(fp);    // 파일 포인터 닫기
+      
+          return 0;
+      }
+      ```
+
+      - 파일을 읽을 때 사용할 임시 공간(버퍼)를 선언해야 하는데 fread 함수를 사용할 때는 char 배열을 선언한 뒤 반드시 0으로 초기화해야 한다(char 포인터에 동적 메모리를 할당한 뒤 0으로 초기화해도 된다).
+
+      - fread 함수는 fgets 함수와는 달리 \n이 있든 없든 무조건 지정된 크기만큼 읽는다. 또한 fread는 버퍼 크기와는 상관없이 파일에서 읽을 수 있는 최대 크기만큼 읽는다. "Hello, world!" 문자열이 저장된 hello.txt.를 21바이트로 읽어도 버퍼에는 Hello, world!가 저장된다. 그러나 fread는 파일 크기에 따라 읽기 성공 여부를 반환하므로 파일 크기 13바이트보다 큰 20이나 21을 지정하면 지정한 값만큼 못 읽었기 때문에 0이 반환된다. 읽은 횟수 1을 반환하려면 fread(buffer, 13, 1, fp); 처럼 파일 크기 13을 지정해주면 된다.
+
+      - fread 함수도 stdin을 지정하면 사용자가 입력한 문자열을 버퍼에 저장합니다. 단, fread 함수는 무조건 지정된 크기만큼만 읽으므로 버퍼 끝에 NULL이 들어갈 수 있도록 읽기 크기는 버퍼 크기보다 1이 적도록 만들어줍니다.
+
+        ```c
+        char buffer[20] = { 0, };
+        fread(buffer, sizeof(buffer) - 1, 1, stdin);    // 표준 입력(stdin)에서 문자열 읽기
+                             // 버퍼 끝에 NULL이 들어갈 수 있도록 sizeof(buffer) - 1을 지정
+        ```
+
+---
 
