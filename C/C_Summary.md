@@ -1,4 +1,4 @@
-# feof 함수는 현재 파일 포인터의 위치가 파일의 끝이면 1, 파일의 끝이 아니면 0을 반환하므로 -1인 EOF와는 상관이 없습니다. EOF는 scanf, fscanf 등의 함수에서 값을 읽을 수 없는 상태일 때 반환됩니다.C 내용 정리
+# C 내용 정리
 
 본 문서는 C언어 코딩 도장이라는 책을 공부하면서 C에 대해 새롭게 알게 된 내용들을 정리한 문서이다. 
 
@@ -3552,6 +3552,62 @@ typedef int (*FP)(int, int);    // fp를 함수 포인터 별칭으로 정의
   - feof 함수와 EOF
 
     feof 함수는 현재 파일 포인터의 위치가 파일의 끝이면 1, 파일의 끝이 아니면 0을 반환하므로 -1인 EOF와는 상관이 없다. EOF는 scanf, fscanf 등의 함수에서 값을 읽을 수 없는 상태일 때 반환된다.
+
+---
+
+- **읽어볼 만한 코드**
+
+  ```c
+  #define _CRT_SECURE_NO_WARNINGS
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string.h>
+  
+  int getFileSize(FILE *fp)
+  {
+      int size;
+      int currPos = ftell(fp);
+  
+      fseek(fp, 0, SEEK_END);
+      size = ftell(fp);
+  
+      fseek(fp, currPos, SEEK_SET);
+  
+      return size;
+  }
+  
+  char *getData(int offset, int size, int *count, FILE *fp)
+  {
+      char* data = malloc(sizeof(char) * size + 1);
+  	memset(data, 0, size + 1);
+  
+  	fseek(fp, offset, SEEK_SET);
+  	*(count) = fread(data, sizeof(char), size, fp);
+  
+  	return data;
+  }
+  
+  int main()
+  {
+      char *buffer;
+      int size;
+      int count;
+  
+      FILE *fp = fopen("words.txt", "r");
+  
+      size = getFileSize(fp);
+      buffer = getData(0, size, &count, fp);
+   
+      printf("%s\n", buffer);
+      printf("%d", count);
+  
+      fclose(fp);
+  
+      free(buffer);
+  
+      return 0;
+  }
+  ```
 
 ---
 
