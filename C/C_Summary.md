@@ -3611,3 +3611,111 @@ typedef int (*FP)(int, int);    // fp를 함수 포인터 별칭으로 정의
 
 ---
 
+- **바이너리 파일과 텍스트 파일의 차이점**
+
+  ![바이너리와 텍스트의 차이](https://dojang.io/pluginfile.php/691/mod_page/content/13/unit72-1.png)
+
+  숫자를 저장한다면 바이너리 형식은 숫자를 그대로 저장하지만 텍스트 형식은 숫자를 문자열 형태(ASCII)로 저장한다. 따라서 바이너리 형식은 같은 정보를 저장하더라도 텍스트 형식보다 차지하는 공간이 적고, 처리 속도가 빠르다.
+
+---
+
+-  **바이너리 형식으로 저장 - 파일에 구조체 쓰기**
+
+  ```c
+  #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+  #include <stdio.h>     // fopen, fwrite, fclose 함수가 선언된 헤더 파일
+  
+  #pragma pack(push, 1)    // 1바이트 크기로 정렬
+  struct Data {
+      short num1;    // 2바이트
+      short num2;    // 2바이트
+      short num3;    // 2바이트
+      short num4;    // 2바이트
+  };
+  #pragma pack(pop)       // 정렬 설정을 이전 상태(기본값)로 되돌림
+   
+  int main()
+  {
+      struct Data d1;
+      memset(&d1, 0, sizeof(d1));    // 구조체 변수의 내용을 0으로 초기화
+  
+      d1.num1 = 100;
+      d1.num2 = 200;
+      d1.num3 = 300;
+      d1.num4 = 400;
+  
+      FILE *fp = fopen("data.bin", "wb");   // 파일을 쓰기/바이너리 모드(wb)로 열기
+  
+      fwrite(&d1, sizeof(d1), 1, fp);       // 구조체의 내용을 파일에 저장
+  
+      fclose(fp);    // 파일 포인터 닫기
+  
+      return 0;
+  }
+  ```
+
+  Visual Studio에서 Ctrl+F5 키를 눌러 프로그램을 실행하면 .c 파일이 있는 폴더에 data.bin 파일이 생성됩니다. Visual Studio에서 파일(F) > 열기(O) > 파일(F) ... 메뉴를 클릭한 뒤 data.bin 파일을 열어보면 다음과 같이 16진수 형태로 내용이 표시됩니다(메모장이나 기타 텍스트 편집기로 열면 내용을 정확히 볼 수 없습니다).
+
+  ```c
+  00000000  64 00 C8 00 2C 01 90 01                               d...,...
+  ```
+
+  리눅스나 OS X에서 data.bin 파일의 내용을 보려면 xxd 명령을 사용합니다.
+
+  ```
+  $ xxd data.bin
+  0000000: 6400 c800 2c01 9001                      d...,...
+  ```
+
+  - 먼저 각 멤버의 크기 그대로 파일에 저장할 수 있도록 구조체를 1바이트 크기로 정렬합니다. 만약 GCC 버전이 4.0 미만이라면 #pragma pack(push, 1), #pragma pack(pop) 대신 \_\_attribute\_\_((aligned(1), packed))로 정렬을 해줍니다.
+
+  - 이때 구조체 변수는 반드시 memset 함수를 사용하여 0으로 초기화해 줍니다. 만약 0으로 초기화하지 않으면 배열 s1 부분에는 이전에 메모리에서 쓰던 값이 들어갈 수 있습니다.
+
+  - 구조체를 바이너리 형태로 저장해야 되니 파일 모드도 바꿔줘야 되겠죠? 다음과 같이 fopen 함수에 파일 모드를 "wb"로 지정하여 파일을 쓰기/바이너리 모드(wb)로 엽니다.
+
+  - 이제 fwrite 함수를 사용하여 구조체 변수 d1을 파일에 저장합니다. fwrite 함수에는 값의 메모리 주소를 넣어야 하므로 &d1와 같이 변수의 주소를 넣어줍니다(동적 메모리를 할당한 포인터도 가능). 그리고 쓰기 크기는 구조체의 크기를 구해서 넣고, 쓰기 횟수는 1을 넣습니다. 마지막에는 파일 포인터 fp를 넣어줍니다.
+
+  - 구조체 변수 d1을 data.bin 파일에 저장한 모습을 그림으로 표현하면 다음과 같은 모양이 됩니다(x86 플랫폼에서는 정수가 리틀 엔디언으로 저장되므로 0x64는 64 00이 됩니다).
+
+    ![구조체 내용을 파일에 쓰기](https://dojang.io/pluginfile.php/692/mod_page/content/29/unit72-2.png)
+
+---
+
+- **바이너리 파일 읽기 - 파일에서 구조체 읽기**
+
+  ```c
+  #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+  #include <stdio.h>>    // fopen, fread, fclose 함수가 선언된 헤더 파일
+  
+  #pragma pack(push, 1)    // 1바이트 크기로 정렬
+  struct Data {
+      char c1;        //  1바이트
+      short num1;     //  2바이트
+      int num2;       //  4바이트
+      char s1[20];    // 20바이트
+  };
+  #pragma pack(pop)        // 정렬 설정을 이전 상태(기본값)로 되돌림
+  
+  int main()
+  {
+      struct Data d1;
+  
+      FILE *fp = fopen("data2.bin", "rb");   // 파일을 읽기/바이너리 모드(rb)로 열기
+  
+      fread(&d1, sizeof(d1), 1, fp);         // 파일의 내용을 읽어서 구조체 변수에 저장
+  
+      printf("%c %d %d %s\n", d1.c1, d1.num1, d1.num2, d1.s1);    // a 32100 2100000100 Hello, world!
+  
+      fclose(fp);    // 파일 포인터 닫기
+  
+      return 0;
+  }
+  ```
+
+  - 먼저 파일에서 읽은 내용을 저장할 구조체를 정의합니다. 앞에서 data2.bin 파일에 1바이트 크기의 char, 2바이트 크기의 short, 4바이트 크기의 int, 20바이트 크기의 char 배열에 값을 넣어서 저장했으므로 파일에서 값을 읽을 때도 똑같은 구조체를 만들어줍니다.
+  - 바이너리 파일을 읽어서 구조체에 저장할 때는 구조체 멤버의 크기뿐만 아니라 순서도 중요합니다. 만약 구조체 멤버의 순서가 달라진다면 값의 일부만 가져오거나 여러 개의 값을 묶어서 가져올 수도 있으므로 주의해야 합니다.
+
+  ![파일에서 구조체 읽기](https://dojang.io/pluginfile.php/693/mod_page/content/23/unit72-4.png)
+
+---
+
