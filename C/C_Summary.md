@@ -1,4 +1,4 @@
-# C 내용 정리
+# feof 함수는 현재 파일 포인터의 위치가 파일의 끝이면 1, 파일의 끝이 아니면 0을 반환하므로 -1인 EOF와는 상관이 없습니다. EOF는 scanf, fscanf 등의 함수에서 값을 읽을 수 없는 상태일 때 반환됩니다.C 내용 정리
 
 본 문서는 C언어 코딩 도장이라는 책을 공부하면서 C에 대해 새롭게 알게 된 내용들을 정리한 문서이다. 
 
@@ -3349,6 +3349,209 @@ typedef int (*FP)(int, int);    // fp를 함수 포인터 별칭으로 정의
         fread(buffer, sizeof(buffer) - 1, 1, stdin);    // 표준 입력(stdin)에서 문자열 읽기
                              // 버퍼 끝에 NULL이 들어갈 수 있도록 sizeof(buffer) - 1을 지정
         ```
+
+---
+
+- **파일의 크기 구하기**
+
+  파일의 크기를 구할 때는 fseek, ftell함수를 같이 사용한다.
+
+  - **fseek(파일포인터, 이동할크기, 기준점);**
+
+  - - **int fseek(FILE \*_Stream, long _Offset, int _Origin);**
+    - 성공하면 0, 실패하면 -1을 반환
+
+  - **ftell(파일포인터);**
+
+  - - **long ftell(FILE \*_Stream);**
+    - 파일 포인터의 현재 위치를 반환, 실패하면 -1을 반환
+
+  ```c
+  #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+  #include <stdio.h>     // fopen, fseek, ftell, fclose 함수가 선언된 헤더 파일
+  
+  int main()
+  {
+      int size;
+  
+      FILE *fp = fopen("hello.txt", "r");    // hello.txt 파일을 읽기 모드(r)로 열기.
+                                             // 파일 포인터를 반환
+  
+      fseek(fp, 0, SEEK_END);    // 파일 포인터를 파일의 끝으로 이동시킴
+      size = ftell(fp);          // 파일 포인터의 현재 위치를 얻음
+  
+      printf("%d\n", size);      // 13
+  
+      fclose(fp);
+  
+      return 0;
+  }
+  ```
+
+  - fseek 함수의 기준점 종류
+
+    |  기준점  |            설명             |                              예                              |
+    | :------: | :-------------------------: | :----------------------------------------------------------: |
+    | SEEK_SET | 파일의 처음부터 이동을 시작 | fseek(fp, 0, SEEK_SET); // 파일 포인터를 파일의 처음으로 이동시킴 |
+    | SEEK_CUR |  현재 위치부터 이동을 시작  | fseek(fp, -10, SEEK_CUR); // 파일 포인터를 현재 위치에서 10바이트만큼 역방향으로 이동시킴(-10이 음수이므로) |
+    | SEEK_END |  파일의 끝부터 이동을 시작  | fseek(fp, 0, SEEK_END); // 파일 포인터를 파일의 끝으로 이동시킴 |
+
+  - 그림으로 보는 fseek 함수
+
+    ![fseek함수의 기준점](https://dojang.io/pluginfile.php/680/mod_page/content/34/unit71-1.png)
+
+  - 파일의 크기만큼 버퍼를 생성하고 파일 읽기
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+    #include <stdio.h>     // fopen, fseek, ftell, fread, fclose 함수가 선언된 헤더 파일
+    #include <stdlib.h>    // malloc, free 함수가 선언된 헤더 파일
+    #include <string.h>    // memset 함수가 선언된 헤더 파일
+    
+    int main()
+    {
+        char *buffer;
+        int size;
+        int count;
+    
+        FILE *fp = fopen("hello.txt", "r");    // hello.txt 파일을 읽기 모드(r)로 열기.
+                                               // 파일 포인터를 반환
+    
+        fseek(fp, 0, SEEK_END);    // 파일 포인터를 파일의 끝으로 이동시킴
+        size = ftell(fp);          // 파일 포인터의 현재 위치를 얻음
+    
+        buffer = malloc(size + 1);    // 파일 크기 + 1바이트(문자열 마지막의 NULL)만큼 동적 메모리 할당
+        memset(buffer, 0, size + 1);  // 파일 크기 + 1바이트만큼 메모리를 0으로 초기화
+    
+        fseek(fp, 0, SEEK_SET);                // 파일 포인터를 파일의 처음으로 이동시킴
+        count = fread(buffer, size, 1, fp);    // hello.txt에서 파일 크기만큼 값을 읽음
+    
+        printf("%s size: %d, count: %d\n", buffer, size, count);
+                        // Hello world! size: 13, count: 1: 파일의 내용, 파일 크기, 읽은 횟수 출력
+    
+        fclose(fp);     // 파일 포인터 닫기
+    
+        free(buffer);   // 동적 메모리 해제
+    
+        return 0;
+    }
+    ```
+
+  - 파일의 내용을 부분적으로 읽기
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+    #include <stdio.h>     // fopen, fseek, fread, fclose 함수가 선언된 헤더 파일
+    #include <string.h>    // memset 함수가 선언된 헤더 파일
+    
+    int main()
+    {
+        char buffer[10] = { 0, };
+    
+        FILE *fp = fopen("hello.txt", "r");    // hello.txt 파일을 읽기 모드(r)로 열기.
+                                               // 파일 포인터를 반환
+    
+        fseek(fp, 2, SEEK_SET);     // 파일 포인터를 파일 처음에서 2바이트만큼 순방향으로 이동시킴
+        fread(buffer, 3, 1, fp);    // 3바이트만큼 읽음. 3바이트만큼 순방향으로 이동
+    
+        printf("%s\n", buffer);     // llo
+    
+        memset(buffer, 0, 10);      // 버퍼를 0으로 초기화
+    
+        fseek(fp, 3, SEEK_CUR);     // 파일 포인터를 현재 위치에서 3바이트만큼 순방향으로 이동시킴
+        fread(buffer, 4, 1, fp);    // 4바이트만큼 읽음. 4바이트만큼 순방향으로 이동
+    
+        printf("%s\n", buffer);     // orld
+    
+        fclose(fp);    // 파일 포인터 닫기
+    
+        return 0;
+    }
+    ```
+
+    ![파일 포인터의 위치](https://dojang.io/pluginfile.php/682/mod_page/content/27/unit71-6.png)
+
+  - 파일에 값을 부분적으로 쓰기
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+    #include <stdio.h>     // fopen, fseek, rewind, fread, fclose 함수가 선언된 헤더 파일
+    #include <string.h>    // strlen, memset 함수가 선언된 헤더 파일
+    
+    int main()
+    {
+        char *s1 = "abcd";
+        char buffer[20] = { 0, };
+    
+        FILE *fp = fopen("hello.txt", "r+");    // hello.txt 파일을 읽기/쓰기 모드(r+)로 열기.
+                                                // 파일 포인터를 반환
+    
+        fseek(fp, 3, SEEK_SET);           // 파일 포인터를 파일 처음에서 3바이트만큼 순방향으로 이동시킴
+        fwrite(s1, strlen(s1), 1, fp);    // 문자열 길이만큼 문자열을 파일에 저장
+    
+        rewind(fp);                  // 파일 포인터를 파일의 맨 처음으로 이동 시킴
+        fread(buffer, 20, 1, fp);    // 20바이트만큼 읽음
+    
+        printf("%s\n", buffer);      // Helabcdworld!
+    
+        fclose(fp);    // 파일 포인터 닫기
+    
+        return 0;
+    }
+    ```
+
+    - rewind(fp); 에 주목!
+    - 여기서는 fread, fwrite 함수를 예로 들었지만 fgets, fputs 함수도 읽고 쓴 크기만큼 파일 포인터가 순방향으로(forward) 이동한다.
+
+---
+
+- **제한된 버퍼로 파일 전체를 읽기**
+
+  파일의 크기가 엄청 클 때는 파일 크기만큼 큰 버퍼를 생성하기에는 어려움이 있다. 이번에는 파일의 끝인지 검사하는 함수 feof와 부분적으로 파일을 읽는 방법을 이용해서 제한된 버퍼로 파일 전체를 읽어본다.
+
+  - `<stdio.h>`헤더 파일에 선언되어 있다.
+  - feof 함수는 현재 파일 포인터가 파일의 끝인지 검사한다.
+  - **feof(파일포인터);**
+    - **int feof(FILE \*_Stream);**
+    - 파일의 끝이면 1, 끝이 아니면 0을 반환
+
+  ```c
+  #define _CRT_SECURE_NO_WARNINGS    // fopen 보안 경고로 인한 컴파일 에러 방지
+  #include <stdio.h>     // fopen, feof, fread, fclose 함수가 선언된 헤더 파일
+  #include <string.h>    // strlen, memset 함수가 선언된 헤더 파일
+  
+  int main()
+  {
+      char buffer[5] = { 0, };    // 문자열 데이터 4바이트 NULL 1바이트. 4 + 1 = 5
+      int count = 0;
+      int total = 0;
+  
+      FILE *fp = fopen("hello.txt", "r");    // hello.txt 파일을 읽기 모드(r)로 열기.
+                                             // 파일 포인터를 반환
+  
+      while (feof(fp) == 0)    // 파일 포인터가 파일의 끝이 아닐 때 계속 반복
+      {
+          count = fread(buffer, sizeof(char), 4, fp);    // 1바이트씩 4번(4바이트) 읽기
+          printf("%s", buffer);                          // 읽은 내용 출력
+          memset(buffer, 0, 5);                          // 버퍼를 0으로 초기화
+          total += count;                                // 읽은 크기 누적
+      }
+  
+      printf("\ntotal: %d\n", total);    // total: 13: 파일을 읽은 전체 크기 출력
+  
+      fclose(fp);    // 파일 포인터 닫기
+  
+      return 0;
+  }
+  ```
+
+  먼저 버퍼 크기를 5바이트로 만들어주는데 문자열을 읽어서 출력할 것이므로 문자열 4바이트, NULL 1바이트를 더해서 5바이트다(실제로는 메가바이트 단위로 버퍼를 만들면 된다). while 반복문에 조건식으로 feof(fp) == 0을 지정하여 파일 포인터가 파일의 끝이 아닐 때 계속 반복한다. fread 함수로 파일을 읽을 때는 buffer를 선언한 자료형이 char이므로 sizeof(char)를 지정하여 1바이트 크기로 4번 읽는다. 이렇게 하면 fread로 파일을 읽었을 때 읽은 크기만큼 반환값이 나오게 되므로 파일을 읽은 전체 크기를 구할 수 있다.
+
+  ![제한된 버퍼로 파일 전체를 읽기](https://dojang.io/pluginfile.php/683/mod_page/content/22/unit71-9.png)
+
+  - feof 함수와 EOF
+
+    feof 함수는 현재 파일 포인터의 위치가 파일의 끝이면 1, 파일의 끝이 아니면 0을 반환하므로 -1인 EOF와는 상관이 없다. EOF는 scanf, fscanf 등의 함수에서 값을 읽을 수 없는 상태일 때 반환된다.
 
 ---
 
