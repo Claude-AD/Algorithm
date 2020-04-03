@@ -3772,3 +3772,282 @@ typedef int (*FP)(int, int);    // fp를 함수 포인터 별칭으로 정의
 
 ---
 
+- **매크로 정의하기**
+
+  \#define 지시자는 값을 다른 이름으로 정의하며 이름을 짓는 방법은 변수와 같습니다. 보통 매크로는 대문자를 사용합니다.
+
+  - **#define 매크로이름 값**
+
+    ```c
+    #define ARRAY_SIZE 10    // 10을 ARRAY_SIZE로 정의
+    ```
+
+  - 매크로를 매크로로 정의하기
+
+    \#define으로 정의한 매크로는 다른 이름으로 다시 정의할 수 있다.
+
+    ```c
+    #define ARRAY_SIZE 10                     // 10을 ARRAY_SIZE로 정의
+    #define DEFAULT_ARRAY_SIZE ARRAY_SIZE     // ARRAY_SIZE를 DEFAULT_ARRAY_SIZE로 정의
+    ```
+
+    이렇게 정의하면 결과적으로 DEFAULT_ARRAY_SIZE는 10이다.
+
+  - \#define으로 정의한 매크로를 해제
+
+    \#define으로 정의한 매크로를 해제하고 싶을 때는 #undef를 사용합니다.
+
+    - **#undef 매크로이름**
+
+      ```c
+      #include <stdio.h>
+      
+      #define COUNT 10    // 10을 COUNT로 정의
+      
+      int main()
+      {
+          printf("%d\n", COUNT);    // 10
+      
+      #undef COUNT        // 앞에서 정의한 COUNT 해제
+      #define COUNT 20    // 20을 COUNT로 정의
+      
+          printf("%d\n", COUNT);    // 20: #undef로 COUNT를 해제한 뒤 20을 COUNT로 정의했으므로 20이 출력됨
+      
+          return 0;
+      }
+      ```
+
+  - 함수 모양의 매크로 정의하기
+
+    - **#define 매크로이름(x) 함수(x)**
+
+    - **#define 매크로이름(x) 코드조합**
+
+      ```c
+      #include <stdio.h>
+      
+      #define PRINT_NUM(x) printf("%d\n", x)    // printf("%d\n", x)를 PRINT_NUM(x)로 정의
+      
+      int main()
+      {
+          PRINT_NUM(10);    // 10: printf("%d\n", 10)
+      
+          PRINT_NUM(20);    // 20: printf("%d\n", 20)
+      
+          return 0;
+      }
+      ```
+
+      \#define으로 함수 모양의 매크로를 정의할 때는 ( ) (괄호)안에 자료형은 생략하고 인수의 이름만 지정합니다. 그리고 호출할 함수를 작성한 뒤 매크로에 지정했던 인수를 그대로 함수 안에 넣으면 됩니다.
+
+  - **함수를 사용하지 못하도록 만들려면?**
+
+    다음과 같이 함수 이름으로 된 빈 매크로를 지정하면 이후에 해당 이름으로 함수를 호출해도 사용할 수 없게 됩니다.
+
+    ```c
+    #define printf    // printf를 빈 매크로로 정의
+    
+    printf("Hello, world!");    // 아무것도 출력되지 않음
+    ```
+
+  - 여러줄로 된 매크로 정의하기
+
+    \#define은 줄바꿈이 일어날 때 \를 사용하여 여러 줄을 매크로로 만들 수 있습니다. 단, 맨 마지막 줄은 \를 사용하지 않아도 됩니다.
+
+    ```c
+    #define 매크로이름 코드1 \
+                      코드2 \
+                      코드3
+    ```
+
+    ```c
+    #include <stdio.h>
+    
+    // printf 세 줄을 PRINT_NUM3으로 정의
+    #define PRINT_NUM3(x) printf("%d\n", x); \
+                          printf("%d\n", x + 1); \
+                          printf("%d\n", x + 2);
+    
+    int main()
+    {
+        PRINT_NUM3(10);    // 10
+                           // 11
+                           // 12
+    
+        PRINT_NUM3(20);    // 20
+                           // 21
+                           // 22
+    
+        return 0;
+    }
+    ```
+
+    여러 줄로 된 매크로를 사용할 때는 조건문, 반복문 사용에 주의해야 합니다.
+
+    이 코드가 전처리기 과정을 거치면 다음과 같이 if 아래 줄에 printf 세 줄이 생깁니다. 자세히 보면 첫 째줄 printf만 if의 영향을 받고 나머지 두 줄은 영향을 받지 않는다는 것을 알 수 있습니다.
+
+    ```c
+    int num1 = 1;
+    
+    if (num1 == 2)
+        printf("%d\n", 10); // ← 첫 째줄만 if의 영향을 받음
+        printf("%d\n", 10 + 1); // ← 두 번째 세 번째 줄은 if의 조건과는 상관없이 무조건 실행됨
+        printf("%d\n", 10 + 2); // ← 두 번째 세 번째 줄은 if의 조건과는 상관없이 무조건 실행됨
+    ```
+
+    따라서 if 조건문에 여러 줄로 된 매크로를 사용할 때는 반드시 중괄호로 묶어주어야 합니다. if 조건문뿐만 아니라 for, while 반복문도 여러 줄로 된 매크로를 사용할 때는 반드시 중괄호로 묶어주어야 합니다.
+
+  - do-while로 매크로 만들기
+
+    ```c
+    #include <stdio.h>
+    
+    // 매크로 안에서 변수를 선언할 수 있도록 do while 사용
+    // a와 b의 값을 서로 바꿈
+    #define SWAP(a, b, type) do { \
+        type temp; \
+        temp = a;  \
+        a = b;     \
+        b = temp;  \
+    } while (0)
+    
+    int main()
+    {
+        int num1 = 10;
+        int num2 = 20;
+    
+        SWAP(num1, num2, int);            // 값을 바꿀 자료형으로 int를 지정
+        printf("%d %d\n", num1, num2);    // 20 10: 두 변수의 값이 바뀜
+    
+        float num3 = 1.5f;
+        float num4 = 3.8f;
+    
+        SWAP(num3, num4, float);          // 값을 바꿀 자료형으로 float를 지정
+        printf("%f %f\n", num3, num4);    // 3.800000 1.500000: 두 변수의 값이 바뀜
+    
+        return 0;
+    }
+    ```
+
+    여기서 눈 여겨볼 부분은 do while (0)입니다. 별 의미 없는 코드 같지만 실제로는 중요한 역할을 담당합니다. do while (0)은 { } (중괄호)로 묶여 있기 때문에 안에서 변수를 마음대로 선언할 수 있고, 선언된 변수는 do while (0)을 벗어나면 변수가 사라집니다. 즉, SWAP 매크로를 계속 사용했을 때 같은 이름으로 된 변수가 여러 개 생기지만 컴파일 에러를 방지할 수 있습니다.
+
+    ```c
+    do {
+    //   ↓ 이름이 같은 변수가 두 개 선언되지만 do while (0) 안이므로 컴파일 에러가 발생하지 않음
+        int temp;
+        temp = num1;
+        num1 = num2;
+        num2 = temp;
+    } while (0);
+    
+    do {
+    //    ↓ 이름이 같은 변수가 두 개 선언되지만 do while (0) 안이므로 컴파일 에러가 발생하지 않음
+        float temp;
+        temp = num3;
+        num3 = num4;
+        num4 = temp;
+    } while (0);
+    ```
+
+    즉, 변수 temp가 두 개 선언되지만 do while (0) 안이므로 컴파일 에러가 발생하지 않습니다. 만약 SWAP 정의에서 do while (0)과 중괄호를 삭제하고 컴파일하면 temp가 재정의 되었다는 컴파일 에러가 발생하게 됩니다.
+
+    특히 매크로에서 do while (0)을 사용하면 if 조건문과 for, while 반복문에서도 문제 없이 사용할 수 있습니다.
+
+    ```c
+    if (num1 == 10)
+        SWAP(num1, num2, int);
+    else
+        printf("10이 아님\n");
+    ```
+
+    만약 SWAP 매크로를 do while (0) 대신 { } (중괄호)로만 정의하면 전처리기를 거쳤을 때 잘못된 코드가 나옵니다. 이 코드가 전처리기를 거치면 다음과 같이 } (닫는 중괄호) 뒤에 ; (세미콜론)이 붙어서 컴파일 에러가 발생하기 때문이다.
+
+    ```c
+    if (num1 == 10)
+        {
+            int temp;
+            temp = num1;
+            num1 = num2;
+            num2 = temp;
+        };    // 세미콜론 때문에 컴파일 에러가 발생
+    else
+        printf("10이 아님\n");
+    ```
+
+  - 매크로에서의 연산자 우선순위
+
+    연산자 우선순위에 따라서 의도치 않게 계산 결과가 바뀌는 문제를 해결하려면 매크로의 인수와 결과를 모두 ( ) (괄호)로 묶어주면 됩니다.
+
+    ```c
+    #include <stdio.h>
+    
+    // a와 b, 결과를 모두 괄호로 묶어줌
+    #define MUL(a, b) ((a) * (b))
+    
+    // a와 b, 결과를 모두 괄호로 묶어줌
+    #define ADD(a, b) ((a) + (b))
+    
+    int main()
+    {
+        printf("%d\n", MUL(10, 20));          // 200: 10 * 20
+        printf("%d\n", MUL(1 + 2, 3 + 4));    //  21:  3 * 7
+    
+        printf("%d\n", ADD(1, 2));        //   3:  1 + 2
+        printf("%d\n", ADD(1, 2) * 3);    //   9:  3 * 3
+    
+        return 0;
+    }
+    ```
+
+  - ##을 사용하여 여러 코드를 붙이기
+
+    - #define 매크로이름(a, b) a##b
+
+      ```c
+      #include <stdio.h>
+      
+      // a와 b를 붙이는 CONCAT 매크로 정의
+      #define CONCAT(a, b) a##b
+      
+      int main()
+      {
+          printf("%d\n", CONCAT(1, 2));    // 12
+      
+          return 0;
+      }
+      ```
+
+    - \##을 좀 더 응용하면 다음과 같이 매크로로 함수를 호출할 수도 있습니다.
+
+      ```c
+      #include <stdio.h>
+      
+      // hello와 x를 붙여서 호출하는 EXECUTER 매크로 정의
+      #define EXECUTER(x) hello##x()
+      
+      void hello1()
+      {
+          printf("hello 1\n");
+      }
+      
+      void hello2()
+      {
+          printf("hello 2\n");
+      }
+      
+      int main()
+      {
+          EXECUTER(1);    // hello1 함수 호출
+      
+          EXECUTER(2);    // hello2 함수 호출
+      
+          return 0;
+      }
+      ```
+
+      EXECUTER에 1을 넣으면 hello와 1이 붙게 되므로 hello1 함수를 호출하고, 2를 넣으면 hello2 함수를 호출합니다.
+
+---
+
+
+
