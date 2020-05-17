@@ -288,3 +288,13 @@ to_binary(int n)
   ...
   */
   ```
+
+---
+
+- **입력 개수를 모를 때 입력받기**
+  ```C++
+  string str;
+  do {
+    cin >> str;
+  } while(getc(stdin) == ' ');
+  ```
