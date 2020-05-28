@@ -4049,5 +4049,46 @@ typedef int (*FP)(int, int);    // fp를 함수 포인터 별칭으로 정의
 
 ---
 
+- **조건부 컴파일**
 
+  - 조건부 컴파일은 #ifdef와 #endif 지시자를 사용하여 정의합니다. #ifdef에 매크로를 지정하면 해당 매크로가 정의되어 있을 때만 코드를 컴파일합니다.
 
+    ```c
+    #ifdef 매크로
+    코드
+    #endif
+    ```
+
+    다음 코드를 보자.
+
+    ```c
+    #include <stdio.h>
+    
+    #define DEBUG    // DEBUG 매크로 정의
+    
+    int main()
+    {
+    #ifdef DEBUG     // DEBUG 매크로가 정의되어 있다면 #ifdef, #endif 사이의 코드를 컴파일
+        printf("Debug: %s %s %s %d\n", __DATE__, __TIME__, __FILE__, __LINE__);
+    #endif
+    
+        return 0;
+    }
+    ```
+
+    printf안에서 사용한 __DATE__, __TIME__, __FILE__, __LINE__는 컴파일러에서 제공하는 매크로이며 디버그 코드를 작성할 때 유용합니다.
+
+    - _\_DATE__: 컴파일한 날짜(실행 시점의 현재 날짜가 아님)
+    - \_\_TIME\_\_: 컴파일한 시간(실행 시점의 현재 시간이 아님)
+    - \_\_FILE\_\_: \__FILE__ 매크로가 사용된 헤더, 소스 파일
+    - \_\_LINE\_\_: \__LINE__ 매크로가 사용된 줄 번호
+
+  - \#if로 값 또는 식을 판별하여 조건부 컴파일
+
+    ```c
+    #if 값 또는 식
+    코드
+    #endif
+    ```
+
+    
