@@ -25,8 +25,11 @@ int main()
 	}
 	*/
 
-	cout << divisor_arr[0] * divisor_arr[number_of_divisor - 1] << endl; // N의 약수 중 두개씩 짝을 지어 곱하면 N이 되는 성질을 이용
-																		 // 크기순으로 정렬한 '진짜'약수 중 가장 작은 약수와 가장 큰 약수를 곱하여 출력
+	/*
+	N의 약수 중 두개씩 짝을 지어 곱하면 N이 되는 성질을 이용 
+	크기순으로 정렬한 '진짜'약수 중 가장 작은 약수와 가장 큰 약수를 곱하여 출력
+	*/
+	cout << divisor_arr[0] * divisor_arr[number_of_divisor - 1] << endl; 
 	
 	delete[] divisor_arr; // 동적할당 해제
 	return 0;
