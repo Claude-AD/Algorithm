@@ -299,3 +299,72 @@ to_binary(int n)
     cin >> str;
   } while(getc(stdin) == ' ');
   ```
+
+---
+
+- **sort() 함수**
+
+  sort() 함수는 `<algorithm>`헤더에 포함되어 있다.
+  
+  - 기본 사용법
+    ```C++
+    #include <algorithm>
+   
+    int arr[5] = {3, 5, 2, 4, 1};
+    sort(arr, arr + 5);
+    ```
+    위와 같이 배열의 시작 주소와 마지막 주소 + 1을 전달해 주면 된다. 기본적으로 오름차순 정렬을 수행한다.
+    ```C++
+    #include <iostream>
+    #include <algorithm>
+    using namespace std;
+    
+    bool compare(int a, int b) {
+      return a < b;
+    }
+    
+    int main() {
+      int arr[5] = {3, 5, 2, 4, 1};
+      sort(a, a + 5, compare);
+    }
+    ```
+    위와 같이 compare함수를 작성하여 세 번째 인자값으로 전달하면 해당 함수의 반환 값에 맞게 정렬이 동작한다.
+    
+    *a < b : 오름차순, a > b : 내림차순*
+    
+  - 클래스 정렬
+    
+    연산자 오버로딩을 이용한 프로퍼티의 비교를 통해 클래스를 정렬할 수 있다.
+    ```C++
+    #include <iostream>
+    #include <algorithm>
+    using namespace std;
+    
+    class BlackPink {
+    public:
+      string name;
+      int age;
+      
+      BlackPink(string name, int age) {
+        this->name = name;
+        this->age = age;
+      }
+      
+      // 오름차순
+      bool operator <(BlackPink& blackpink) {
+        return this->age < blackpink.age;
+      }
+    };
+    
+    int main() {
+      BlackPink members[] = {
+        BlackPink("로제", 24),
+        BlackPink("지수", 26),
+        BlackPink("제니", 25),
+        BlackPink("리사", 24)
+      };
+      sort(members, members + 4);
+    }
+    ```
+  
+    
