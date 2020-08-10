@@ -3,32 +3,34 @@ using namespace std;
 
 int main()
 {
-	int num;
-	cin >> num;
+	int num; // num번째 줄이 반쪽 다이아몬드의 중간이 된다.
+	cin >> num; // 사용자로부터 입력받음
 
-	for (int i = 0; i < num; i++)
+	// 다이아몬드를 num번째 줄까지의 윗부분(삼각형)과 그 아랫부분(역삼각형)으로 나눈다.
+
+	for (int i = 0; i < num; i++) // 윗부분 별찍기
 	{
-		for (int j = 0; j < num-i-1; j++)
+		for (int j = 0; j < num-i-1; j++) // 지금 N번째 줄이라면 num - N만큼 공백을 출력
 		{
 			cout << ' ';
 		}
-		for (int k = 0; k < i+1; k++)
+		for (int k = 0; k < i+1; k++) // 지금 N번째 줄이라면 N만큼 별을 출력
 		{
 			cout << '*';
 		}
-		cout << '\n';
+		cout << '\n'; // 줄이 끝날 때 마다 개행문자 출력
 	}
-	for (int i = 0; i < num - 1; i++)
+	for (int i = 0; i < num - 1; i++) // 아랫부분 별찍기, num번째 줄 이후로 다시 첫째 줄 부터 시작하는 것으로 가정
 	{
-		for (int j = 0; j < i + 1; j++) 
+		for (int j = 0; j < i + 1; j++) // 지금 N번째 줄이라면 N만큼 공백을 출력
 		{
 			cout << ' ';
 		}
-		for (int k = 0; k < num - i - 1; k++)
+		for (int k = 0; k < num - i - 1; k++) // 지금 N번째 줄이라면 num - N만큼 별을 출력
 		{
 			cout << '*';
 		}
-		cout << '\n';
+		cout << '\n'; // 줄이 끝날 때 마다 개행문자 출력
 	}
 	return 0;
 }
