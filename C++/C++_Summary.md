@@ -320,6 +320,17 @@ to_binary(int n)
     sort(arr, arr + 5);
     ```
     위와 같이 배열의 시작 주소와 마지막 주소 + 1을 전달해 주면 된다. 기본적으로 오름차순 정렬을 수행한다.
+    
+    string과 vector도 sort함수로 정렬할 수 있다.
+    ```C++
+    string num;
+    sort(num.begin(), num.end());
+    
+    vector<int> v;
+    sort(v.begin(), v.end());
+    ```
+    
+  - 세번째 인자
     ```C++
     #include <iostream>
     #include <algorithm>
@@ -337,6 +348,15 @@ to_binary(int n)
     위와 같이 compare함수를 작성하여 세 번째 인자값으로 전달하면 해당 함수의 반환 값에 맞게 정렬이 동작한다.
     
     *a < b : 오름차순, a > b : 내림차순*
+    
+    또한 `<functinal>` 헤더파일을 include하면 less, greater, plus, minus를 사용할 수 있다.
+      - greater : 첫 번째 인자가 두 번째 인자보다 크면 true (내림차순)
+      - less : 첫 번째 인자가 두 번째 인자보다 작으면 true (오름차순)
+      - plus : 두 개의 인자를 더한 값 반환
+      - minus : 첫 번째 인자에서 두 번째 인자를 뺀 값 반환
+    
+    <사용예시>
+    `sort(v.begin(), v.end(), greater<자료형>());`
     
     ***※주의※ new-delete형식으로 동적할당한 배열에 사용하면 오류발생함!!***
     
