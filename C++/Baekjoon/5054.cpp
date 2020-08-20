@@ -1,7 +1,6 @@
 /* 
 문제를 해결한 알고리즘은 상점 위치의 평균을 구한 뒤에 상점 위치들을 오름차순으로 정렬하고 
 차를 평균 지점에 대고 상점을 순서대로 차례대로 들렀다가 다시 주차지점에 돌아오면 최소거리가 된다는 점을 이용하였다.
-*/
 
 #include <iostream>
 #include <vector>
@@ -38,6 +37,39 @@ int main()
 		}
 		cout << min_distance << endl; // 최단 거리 출력
 
+	}
+	return 0;
+}
+*/
+
+// 위 코드의 방식이 결국 상점의 최대 좌표에서 상점의 최소 좌표를 뺀 뒤 2를 곱하면 최소거리가 나오는 알고리즘이므로 코드를 수정해보았다.
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main()
+{
+	int test_case; // 테스트 케이스의 개수
+	cin >> test_case; // 사용자로부터 입력받음
+
+	while (test_case--) { // 테스트 케이스 한 개 당
+		int shop_num; // 상점의 개수
+		cin >> shop_num; // 사용자로부터 입력받음
+
+		int min = 100, max = -1; // 상점 위치 최소, 최대값의 초기값 설정 (상점 위치의 범위가 0 <= x <= 99이므로)
+		vector<int> shop; // 상점 배열을 벡터로 생성
+		for (int i = 0; i < shop_num; i++) { // 상점의 개수만큼
+			int shop_location;
+			cin >> shop_location; // 상점의 위치를 입력받아서
+			shop.push_back(shop_location); // 상점 위치배열에 저장
+
+			max = (shop[i] > max) ? shop[i] : max; // 상점 위치 최대값 탐색
+			min = (shop[i] < min) ? shop[i] : min; // 상점 위치 최소값 탐색
+		}
+
+		int min_distance = 2 * (max - min); // 최소 이동거리 계산
+		cout << min_distance << endl; // 출력
 	}
 	return 0;
 }
