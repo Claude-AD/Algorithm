@@ -432,3 +432,18 @@ to_binary(int n)
   cin >> hex >> num;
   cout << num << endl; // 아무것도 없으면 10진수
   ```
+
+---
+
+- **vector를 함수 인자로 전달할 때**
+
+  Call by reference로 전달을 해주어야 한다.
+  ```C++
+  void get_elem(vector<int> &v, int length) {
+	  for (int i = 0; i < length; i++) {
+		  int elem;
+		  cin >> elem;
+		  v.push_back(elem);
+	  }
+  }
+  ```
