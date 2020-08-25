@@ -437,7 +437,7 @@ to_binary(int n)
 
 - **vector를 함수 인자로 전달할 때**
 
-  Call by reference로 전달을 해주어야 한다.
+  Call by reference로 전달을 해주어야 한다. 그렇지 않으면 값이 바뀌지 않는다.
   ```C++
   void get_elem(vector<int> &v, int length) {
 	  for (int i = 0; i < length; i++) {
