@@ -30,7 +30,7 @@ to_binary(int n)
   16진수의 A ~ F를 10진수로 변환하고 싶을 때!
   
   : *16진수 - 'A' + 10*
-  
+ 
   ***atoi 함수 주의점***
   
   atoi 함수의 원형이 `int atoi(char const *_String);`이므로 인자로 꼭 포인터를 전달해 주어야 작동한다.
