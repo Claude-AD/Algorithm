@@ -54,8 +54,7 @@ to_binary(int n)
         - setfill(사용자 지정 문자) : 빈칸을 공백 대신 사용자가 지정한 문자로 채우는 함수, 한번 설정하면 계속 유지
     
         - setbase(int num) : num은 8, 10, 16이 가능하며 사용자가 진법을 설정 할 수 있음 *(8진법, 10진법, 16진법)*
-    
-        - setprecision(int num) : 실수의 유효숫자 자리수를 지정한다
+
         
     - *`<iostream>` 헤더파일*
     
@@ -64,6 +63,8 @@ to_binary(int n)
         - cout.fill(사용자 지정 문자) : setfill()과 기능 동일
         
         - cout.setf(ios::right 또는 left) : 오른쪽 또는 왼쪽 정렬
+	
+		- cout << fixed; cout.precision(숫자) : 소수점 아래 (숫자)자리까지 표현
         
     ex)
     ```C++
@@ -71,7 +72,8 @@ to_binary(int n)
     
     double x = 3.1415;
     cout << x << endl;
-    cout << setprecision(3) << x << endl; // 소수점 아래 셋째자리까지 표현
+    cout << fixed;
+    cout.precision(3) // 소수점 아래 셋째자리까지 표현
     
     string str = "string";
     cout.setf(ios::left); // 좌측 정렬
