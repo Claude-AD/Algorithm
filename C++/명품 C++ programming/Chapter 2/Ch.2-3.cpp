@@ -1,18 +1,16 @@
 #include <iostream>
 using namespace std;
 
-int main()
-{
-	int num1, num2;
-	cout << "µÎ ¼ö¸¦ ÀÔ·ÂÇÏ¶ó>>";
-	cin >> num1 >> num2;
-
-	if (num1 > num2)
-		cout << "Å« ¼ö = " << num1 << endl;
-	else if (num1 < num2)
-		cout << "Å« ¼ö = " << num2 << endl;
-	else
-		cout << "µÎ ¼ö°¡ °°½À´Ï´Ù." << endl;
-
-	return 0;
+int main() {
+    int num1, num2;
+    cout << "ì„œë¡œ ë‹¤ë¥¸ ë‘ ì •ìˆ˜ë¥¼ ì…ë ¥í•˜ë¼>>";
+    cin >> num1 >> num2;
+    
+    cout << "í° ìˆ˜ = ";
+    if (num1 > num2) {
+        cout << num1 << endl;
+    } else {
+        cout << num2 << endl;
+    }
+    return 0;
 }
