@@ -2,20 +2,16 @@
 #include <string>
 using namespace std;
 
-int main()
-{
-	string name;
-	cout << "ÀÌ¸§Àº?";
-	getline(cin, name);
-
-	string address;
-	cout << "ÁÖ¼Ò´Â?";
-	getline(cin, address);
-
-	string age;
-	cout << "³ªÀÌ´Â?";
-	getline(cin, age);
-
-	cout << name + ", " + address + ", " + age + "¼¼" << endl;
-	return 0;
+int main() {
+    string name, address, age;
+    
+    cout << "ì´ë¦„ì€?";
+    getline(cin, name);
+    cout << "ì£¼ì†ŒëŠ”?";
+    getline(cin, address);
+    cout << "ë‚˜ì´ëŠ”?";
+    cin >> age;
+    
+    cout << name + ", " + address + ", " + age + "ì„¸\n";
+    return 0;
 }
