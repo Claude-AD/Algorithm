@@ -2,39 +2,39 @@
 #include <string>
 using namespace std;
 
-int main()
-{
-	cout << "¿¡½ºÇÁ·¹¼Ò 2000¿ø, ¾Æ¸Ş¸®Ä«³ë 2300¿ø, Ä«ÇªÄ¡³ë 2500¿øÀÔ´Ï´Ù." << endl;
-	int sales = 0;
+void coffeeOrder(string menu, int num); // ì»¤í”¼ ê°€ê²© ê³„ì‚° í•¨ìˆ˜
+int sales = 0;  // ì´ ì»¤í”¼ íŒë§¤ëŸ‰
 
-	while (true)
-	{
-		string coffee;
-		int number;
-		cout << "ÁÖ¹®>>";
-		cin >> coffee >> number;
+int main() {
+    cout << "ì—ìŠ¤í”„ë ˆì†Œ 2000ì›, ì•„ë©”ë¦¬ì¹´ë…¸ 2300ì›, ì¹´í‘¸ì¹˜ë…¸ 2500ì›ì…ë‹ˆë‹¤.\n";
+    while (1) {
+        string coffee_name;
+        int coffee_num;
+        
+        cout << "ì£¼ë¬¸>> ";
+        cin >> coffee_name >> coffee_num;
+        coffeeOrder(coffee_name, coffee_num);
+        
+        if (sales >= 20000) { // íŒë§¤ëŸ‰ì´ 20000ì› ì´ìƒì´ë©´ ì¹´í˜ ì˜ì—… ì¢…ë£Œ
+            cout << "ì˜¤ëŠ˜ " << sales << "ì›ì„ íŒë§¤í•˜ì—¬ ì¹´í˜ë¥¼ ë‹«ìŠµë‹ˆë‹¤. ë‚´ì¼ ë´ìš”~~~\n";
+            break;
+        }
+    }
+    return 0;
+}
 
-		int price;
-		if (coffee.compare("¿¡½ºÇÁ·¹¼Ò") == 0)
-			price = 2000 * number;
-		else if (coffee.compare("¾Æ¸Ş¸®Ä«³ë") == 0)
-			price = 2300 * number;
-		else if (coffee.compare("Ä«ÇªÄ¡³ë") == 0)
-			price = 2500 * number;
-		else
-		{
-			cout << "´Ù½Ã ÁÖ¹®ÇÏ¼¼¿ä!!\n";
-			continue;
-		}
-		
-		printf("%d¿øÀÔ´Ï´Ù. ¸ÀÀÖ°Ô µå¼¼¿ä\n", price);
-		
-		sales += price;
-		if (sales >= 20000)
-		{
-			printf("¿À´Ã %d¿øÀ» ÆÇ¸ÅÇÏ¿© Ä«Æä¸¦ ´İ½À´Ï´Ù. ³»ÀÏ ºÁ¿ä~~~\n", sales);
-			break;
-		}
-	}
-	return 0;
+void coffeeOrder(string menu, int num) {
+    int price;
+    if (menu.compare("ì—ìŠ¤í”„ë ˆì†Œ") == 0) {           // ì—ìŠ¤í”„ë ˆì†Œ ê°€ê²© 2000ì›
+        price = 2000 * num;
+    } else if (menu.compare("ì•„ë©”ë¦¬ì¹´ë…¸") == 0) {    // ì•„ë©”ë¦¬ì¹´ë…¸ ê°€ê²© 2300ì›
+        price = 2300 * num;
+    } else if (menu.compare("ì¹´í‘¸ì¹˜ë…¸") == 0) {     // ì¹´í‘¸ì¹˜ë…¸ ê°€ê²© 2500ì›
+        price = 2500 * num;
+    } else {
+        cout << "ë‹¤ì‹œ ì£¼ë¬¸í•˜ì„¸ìš”!!!\n";
+        return;
+    }
+    cout << price << "ì›ì…ë‹ˆë‹¤. ë§›ìˆê²Œ ë“œì„¸ìš”\n";
+    sales += price; // ì´ íŒë§¤ëŸ‰ì— íŒë§¤í•œ ì»¤í”¼ê°€ê²© ì¶”ê°€
 }
