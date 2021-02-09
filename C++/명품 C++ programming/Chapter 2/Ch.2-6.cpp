@@ -1,23 +1,23 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
-int main()
-{
-	string password;
-	cout << "»õ ¾ÏÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä>>";
-	cin >> password;
-
-	string check;
-	cout << "»õ ¾ÏÈ£¸¦ ´Ù½Ã ÇÑ ¹ø ÀÔ·ÂÇÏ¼¼¿ä>>";
-	cin >> check;
-
-	if (password == check)
-	{
-		cout << "°°½À´Ï´Ù\n";
-	}
-	else
-	{
-		cout << "°°Áö ¾Ê½À´Ï´Ù\n";
-	}
-	return 0;
+int main() {
+    string password, password_confirm;
+    
+    cout << "ìƒˆ ì•”í˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”>>";
+    cin >> password;
+    cout << "ìƒˆ ì•”í˜¸ë¥¼ ë‹¤ì‹œ í•œ ë²ˆ ì…ë ¥í•˜ì„¸ìš”>>";
+    cin >> password_confirm;
+    
+    /*
+     == ì—°ì‚°ìë¥¼ ì‚¬ìš©í•˜ë©´ ë‘ stringì˜ memoryì£¼ì†Œë¥¼ ë¹„êµí•˜ë¯€ë¡œ
+     ë¬¸ìì—´ì´ ê°™ì•„ë„ ê²°ê³¼ëŠ” ë‹¤ë¥´ë‹¤ê³  ë‚˜ì˜´. ë”°ë¼ì„œ compareí•¨ìˆ˜ ì‚¬ìš©
+    */
+    if (password.compare(password_confirm) == 0) {
+        cout << "ê°™ìŠµë‹ˆë‹¤\n";
+    } else {
+        cout << "ê°™ì§€ ì•ŠìŠµë‹ˆë‹¤\n";
+    }
+    return 0;
 }
