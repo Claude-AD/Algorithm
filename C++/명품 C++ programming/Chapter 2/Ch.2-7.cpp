@@ -2,20 +2,16 @@
 #include <string>
 using namespace std;
 
-int main()
-{
-	while (true)
-	{
-		cout << "Á¾·áÇÏ°í½ÍÀ¸¸é yes¸¦ ÀÔ·ÂÇÏ¼¼¿ä>>";
-		string yes;
-		getline(cin, yes);
-
-		if (yes == "yes")
-		{
-			cout << "Á¾·áÇÕ´Ï´Ù...\n";
-			break;
-		}
-		else
-			continue;
-	}
+int main() {
+    while(1) {
+        string input_str;
+        cout << "ì¢…ë£Œí•˜ê³ ì‹¶ìœ¼ë©´ yesë¥¼ ì…ë ¥í•˜ì„¸ìš”>>";
+        getline(cin, input_str);
+        
+        if (input_str.compare("yes") == 0) {
+            cout << "ì¢…ë£Œí•©ë‹ˆë‹¤...\n";
+            break;
+        }
+    }
+    return 0;
 }
