@@ -1,38 +1,37 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 using namespace std;
 
-int main()
-{
-	cout << "¿µ¹® ÅØ½ºÆ®¸¦ ÀÔ·ÂÇÏ¼¼¿ä. È÷½ºÅä±×·¥À» ±×¸³´Ï´Ù.\nÅØ½ºÆ®ÀÇ ³¡Àº ;ÀÔ´Ï´Ù. 1000°³±îÁö °¡´ÉÇÕ´Ï´Ù.\n";
-	string buf;
-	getline(cin, buf, ';');
-
-	int alpha = 0;
-	int alpha_counter[26] = { 0 };			// ÃÊ±âÈ­ ÇÏ´Â ¹ö¸© µéÀÌ±â
-	for (int i = 0; i < buf.size(); i++)
-	{
-		if (isupper(buf[i]))
-		{
-			buf[i] = tolower(buf[i]);
-		}
-		if (isalpha(buf[i]))
-		{
-			alpha++;
-			
-			int ascii = buf[i] - 97;
-			alpha_counter[ascii]++;
-		}
-	}
-	cout << "ÃÑ ¾ËÆÄºª ¼ö " << alpha << "\n\n";
-	for (int i = 0; i < 26; i++)
-	{
-		char alphabet = (char)(i + 97);
-		printf("%c (%d) : ", alphabet, alpha_counter[i]);
-		for (int j = 0; j < alpha_counter[i]; j++)
-		{
-			cout << '*';
-		}
-		cout << endl;
-	}
+int main() {
+    cout << "ì˜ë¬¸ í…ìŠ¤íŠ¸ë¥¼ ìž…ë ¥í•˜ì„¸ìš”. ížˆìŠ¤í† ê·¸ëž¨ì„ ê·¸ë¦½ë‹ˆë‹¤.\n"
+    << "í…ìŠ¤íŠ¸ì˜ ëì€ ; ìž…ë‹ˆë‹¤. 10000ê°œê¹Œì§€ ê°€ëŠ¥í•©ë‹ˆë‹¤.\n";
+    
+    
+    string alphaStr;  //  String to receive input from user
+    int alphaTotalCnt = 0;  // Total alphabet count
+    int alphaCnt[26] = { 0 };  // Array to store each number of alphabets
+    getline(cin, alphaStr, ';');
+    
+    for (int i = 0; i < alphaStr.length(); i++) {  // Examine all characters in string
+        if(!isalpha(alphaStr[i]))  // If it isn't alphabet,
+            continue;  // examine next characters
+        else {  // If it is alphabet,
+            alphaStr[i] = tolower(alphaStr[i]);  // Change it to lower alphabet
+            alphaTotalCnt++;  // Increase total alphabet count
+            alphaCnt[(int)alphaStr[i] - 97]++;  // Increase the number of alphabets corresponding to it
+        }
+    }
+    
+    cout << "ì´ ì•ŒíŒŒë²³ ìˆ˜ " << alphaTotalCnt << "\n\n";  // print total alphabet count
+    
+    // print each number of alphabets with stars
+    for (int i = 0; i < 26; i++) {
+        cout << (char)(i+97) << " (" << alphaCnt[i] << ")\t: ";
+        while(alphaCnt[i]--) {
+            cout << "*";
+        }
+        cout << endl;
+    }
+    return 0;
 }
