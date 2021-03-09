@@ -1,41 +1,20 @@
 #include <iostream>
-#include <cmath>
+#include "Exp.h"
 using namespace std;
 
-class Exp
-{
-private:
-	int base;
-	int exponent;
-
-public:
-	Exp() : Exp(1, 1) { }
-	Exp(int a) : Exp(a, 1) { }
-	Exp(int a, int b) : base(a), exponent(b) { }
-
-	int get_value() { return pow(base, exponent); }
-	int get_base() { return base; }
-	int get_exp() { return exponent; }
-	bool equals(Exp b)
-	{
-		if (b.get_value() == get_value())
-			return true;
-		else
-			return false;
-	}
-};
-
-int main()
-{
-	Exp a(3, 2);
-	Exp b(9);
-	Exp c;
-
-	cout << a.get_value() << ' ' << b.get_value() << ' ' << c.get_value() << endl;
-	printf("aÀÇ º£ÀÌ½º %d,Áö¼ö %d\n", a.get_base(), a.get_exp());
-
-	if (a.equals(b))
-		cout << "same" << endl;
-	else
-		cout << "not same" << endl;
+int main() {
+    Exp a(3, 2);  // 3^2 = 9. base 3, exponential 2
+    Exp b(9);  // 9^1 = 9. base 9, exponential 1
+    Exp c;  // 1^1, base 1, exponential 1
+    
+    cout << a.getValue() << ' ' << b.getValue() << ' ' << c.getValue() << endl;
+    cout << "aì˜ ë² ì´ìŠ¤ " << a.getBase() << ',' << "ì§€ìˆ˜ " << a.getExp() << endl;
+    
+    if(a.equals(b))
+        cout << "same" << endl;
+    else
+        cout << "not same" << endl;
+    
+    return 0;
 }
+
