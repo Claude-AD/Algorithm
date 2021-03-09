@@ -1,23 +1,20 @@
 #include <iostream>
 using namespace std;
 
-class Tower
-{
-private:
-	int height;
-	
+class Tower {
+    int height;
+    
 public:
-	Tower() : Tower(1) { }
-	Tower(int h) : height(h) { }
-
-	int get_height() { return height; }
+    Tower() : height(1) { }  // Constructor without a parameter
+    Tower(int h) : height(h) { }  // Constructor that has a parameter
+    int getHeight() { return height; }  // Function which returns height
 };
 
-int main()
-{
-	Tower my_tower;
-	Tower seoul_tower(100);
-	printf("≥Ù¿Ã¥¬ %dπÃ≈Õ\n", my_tower.get_height());
-	printf("≥Ù¿Ã¥¬ %dπÃ≈Õ\n", seoul_tower.get_height());
-	return 0;
+int main() {
+    Tower myTower;  // 1 meter
+    Tower seoulTower(100);  // 100 meter
+    cout << "ÎÜíÏù¥Îäî " << myTower.getHeight() << "ÎØ∏ÌÑ∞" << endl;
+    cout << "ÎÜíÏù¥Îäî " << seoulTower.getHeight() << "ÎØ∏ÌÑ∞" << endl;
+    
+    return 0;
 }
