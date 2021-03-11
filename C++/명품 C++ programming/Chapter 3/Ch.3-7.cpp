@@ -3,88 +3,47 @@
 #include <ctime>
 using namespace std;
 
-class Random
-{
-private:
-	string select;
+class SelectableRandom {
+    int isOdd;
 public:
-	Random(string s) : select(s) { }
-	string get_select() { return select; }
-	int next();
-	int next_in_range(int a, int b);
+    //  num == 1ì´ë©´ í™€ìˆ˜, 0ì´ë©´ ì§ìˆ˜
+    SelectableRandom(int num) : isOdd(num) { }
+    int next();
+    int nextInRange(int min, int max);
 };
 
-int Random::next()
-{
-	if (select == "Â¦¼ö")
-	{
-		while (true)
-		{
-			int num = rand();
-			if (num % 2 == 0)
-				return num;
-			else
-				continue;
-		}
-	}
-	else if (select == "È¦¼ö")
-	{
-		while (true)
-		{
-			int num = rand();
-			if (num % 2 == 1)
-				return num;
-			else
-				continue;
-		}
-	}
+int SelectableRandom::next() {
+    int result = rand();
+    if (result % 2 != isOdd)
+        return next();
+    else
+        return result;
+}
+int SelectableRandom::nextInRange(int min, int max) {
+    int result = rand() % (max - min + 1) + min;
+    if (result % 2 != isOdd)
+        return nextInRange(min, max);
+    else
+        return result;
 }
 
-int Random::next_in_range(int a, int b)
-{
-	if (select == "Â¦¼ö")
-	{
-		while (true)
-		{
-			int num = rand() % (b - a + 1) + a;
-			if (num % 2 == 0)
-				return num;
-			else
-				continue;
-		}
-	}
-	else if (select == "È¦¼ö")
-	{
-		while (true)
-		{
-			int num = rand() % (b - a + 1) + a;
-			if (num % 2 == 1)
-				return num;
-			else
-				continue;
-		}
-	}
-}
-
-int main()
-{
-	srand(time(nullptr));
-	
-	Random r_even("Â¦¼ö");
-	printf("-- 0¿¡¼­ %d±îÁöÀÇ %s ·£´ı Á¤¼ö 10°³ --\n", RAND_MAX, (r_even.get_select()).c_str());
-	for (int i = 0; i < 10; i++)
-	{
-		int n = r_even.next();
-		cout << n << ' ';
-	}
-
-	Random r_odd("È¦¼ö");
-	cout << "\n\n-- 2¿¡¼­ 9±îÁöÀÇ " << r_odd.get_select() << " ·£´ı Á¤¼ö 10°³ --\n";
-	for (int i = 0; i < 10; i++)
-	{
-		int n = r_odd.next_in_range(2, 9);
-		cout << n << ' ';
-	}
-	cout << endl;
-	return 0;
+int main() {
+    //  í•­ìƒ ë³€í•˜ëŠ” ê°’ì¸ ì‹œê°„ì„ seedë¡œ ë„£ì–´ì£¼ì–´ ì™„ì „ ë‚œìˆ˜ ìƒì„±
+    srand((unsigned int)time(NULL));
+    
+    SelectableRandom randomEven(0);
+    cout << "-- 0ì—ì„œ " << RAND_MAX << "ê¹Œì§€ì˜ ì§ìˆ˜ ëœë¤ ì •ìˆ˜ 10 ê°œ --\n";
+    for(int i = 0; i < 10; i++) {
+        int n = randomEven.next();
+        cout << n << ' ';
+    }
+    
+    SelectableRandom randomOdd(1);
+    cout << "\n\n-- 2ì—ì„œ 9 ê¹Œì§€ì˜ ëœë¤ í™€ìˆ˜ ì •ìˆ˜ 10 ê°œ --\n";
+    for(int i = 0; i < 10; i++) {
+        int n = randomOdd.nextInRange(2, 9);
+        cout << n << ' ';
+    }
+    cout << endl;
+    return 0;
 }
