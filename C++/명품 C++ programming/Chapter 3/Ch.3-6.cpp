@@ -3,44 +3,42 @@
 #include <ctime>
 using namespace std;
 
-class Random
-{
+class EvenRandom {
 public:
-	int next() { return rand(); }
-	int next_in_range(int a, int b) { return rand() % (b - a + 1) + a; }
+    int next();
+    int nextInRange(int min, int max);
 };
 
-int main()
-{
-	Random r;
-	printf("-- 0¿¡¼­ %d±îÁöÀÇ ·£´ı Á¤¼ö 10°³ --\n", RAND_MAX);
-	srand(time(nullptr));
-	for (int i = 0; i < 10; i++)
-	{
-		int n = r.next();
-		if (n % 2 == 0)
-		{
-			cout << n << ' ';
-		}
-		else
-		{
-			i--;
-		}
-	}
+int EvenRandom::next() {
+    int result = rand();
+    if (result % 2 != 0)
+        return next();
+    else
+        return result;
+}
+int EvenRandom::nextInRange(int min, int max) {
+    int result = rand() % (max - min + 1) + min;
+    if (result % 2 != 0)
+        return nextInRange(min, max);
+    else
+        return result;
+}
 
-	cout << "\n\n-- 2¿¡¼­ 10±îÁöÀÇ ·£´ı Á¤¼ö 10°³ --\n";
-	for (int i = 0; i < 10; i++)
-	{
-		int n = r.next_in_range(2, 10);
-		if (n % 2 == 0)
-		{
-			cout << n << ' ';
-		}
-		else
-		{
-			i--;
-		}	
-	}
-	cout << endl;
-	return 0;
+int main() {
+    //  í•­ìƒ ë³€í•˜ëŠ” ê°’ì¸ ì‹œê°„ì„ seedë¡œ ë„£ì–´ì£¼ì–´ ì™„ì „ ë‚œìˆ˜ ìƒì„±
+    srand((unsigned int)time(NULL));
+    
+    EvenRandom r;
+    cout << "-- 0ì—ì„œ " << RAND_MAX << "ê¹Œì§€ì˜ ëœë¤ ì •ìˆ˜ 10 ê°œ --\n";
+    for(int i = 0; i < 10; i++) {
+        int n = r.next();
+        cout << n << ' ';
+    }
+    cout << "\n\n-- 2ì—ì„œ 10 ê¹Œì§€ì˜ ëœë¤ ì •ìˆ˜ 10 ê°œ --\n";
+    for(int i = 0; i < 10; i++) {
+        int n = r.nextInRange(2, 10);
+        cout << n << ' ';
+    }
+    cout << endl;
+    return 0;
 }
