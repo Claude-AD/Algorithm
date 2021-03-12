@@ -1,7 +1,6 @@
 #ifndef WORDGAME_H
 #define WORDGAME_H
 
-#include <iostream>
 #include <string>
 using namespace std;
 
