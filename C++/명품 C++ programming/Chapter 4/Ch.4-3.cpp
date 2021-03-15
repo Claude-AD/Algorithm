@@ -2,41 +2,35 @@
 #include <string>
 using namespace std;
 
-int main()
-{
-	string str;
-	cout << "¹®ÀÚ¿­ ÀÔ·Â>>";
-	getline(cin, str);
-
-	//(1)¹ø ¹®Á¦
-	cout << "\nat() ¶Ç´Â []¸¦ ÀÌ¿ëÇÑ °æ¿ì" << endl;
-	
-	int count_1 = 0;
-	for (int i = 0; i < str.size(); i++)
-	{
-		if (str[i] == 'a')
-			count_1++;
-		else
-			continue;
-	}
-	printf("¹®ÀÚ a´Â %d°³ ÀÖ½À´Ï´Ù.\n", count_1);
-
-	//(2)¹ø ¹®Á¦
-	cout << "\nfind()¸¦ ÀÌ¿ëÇÑ °æ¿ì" << endl;
-
-	int count_2 = 0;
-	int start_index = 0;
-	while (true)
-	{
-		int f_index = str.find('a', start_index);
-		if (f_index == string::npos)
-			break;
-		else
-		{
-			count_2++;
-			start_index = f_index + 1;
-		}
-	}
-	printf("¹®ÀÚ a´Â %d°³ ÀÖ½À´Ï´Ù.", count_2);
-	return 0;
+int main() {
+    // (1) [] ì‚¬ìš©
+    string strAt;
+    int aCountAt = 0;
+    cout << "(1) ë¬¸ìì—´ ì…ë ¥>> ";
+    getline(cin, strAt);
+    
+    for(int i = 0; i < strAt.length(); i++) {
+        if(strAt[i] == 'a')
+            aCountAt++;
+    }
+    cout << "ë¬¸ì aëŠ” " << aCountAt << "ê°œ ìˆìŠµë‹ˆë‹¤.\n";
+    
+    // (2) find ì‚¬ìš©
+    string strFind;
+    int aCountFind = 0;
+    int index = 0;
+    cout << "(2) ë¬¸ìì—´ ì…ë ¥>> ";
+    getline(cin, strFind);
+    
+    while(1) {
+        int i = strFind.find('a', index);
+        if (i == -1)
+            break;
+        else {
+            aCountFind++;
+            index = i + 1;
+        }
+    }
+    cout << "ë¬¸ì aëŠ” " << aCountFind << "ê°œ ìˆìŠµë‹ˆë‹¤.\n";
+    return 0;
 }
