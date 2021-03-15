@@ -1,47 +1,30 @@
+#include "Person.h"
 #include <iostream>
 #include <string>
 using namespace std;
 
-class Person
-{
-private:
-	string name;
-	string tel;
-
-public:
-	string get_name() { return name; }
-	string get_tel() { return tel; }
-	void set(string name, string tel) { this->name = name; this->tel = tel; }
-};
-
-int main()
-{
-	cout << "ÀÌ¸§°ú ÀüÈ­ ¹øÈ£¸¦ ÀÔ·ÂÇØ ÁÖ¼¼¿ä\n";
-	Person people[3];
-	for (int i = 0; i < 3; i++)
-	{
-		string n, t;
-		printf("»ç¶÷ %d>> ", i + 1);
-		cin >> n >> t;
-		people[i].set(n, t);
-	}
-	
-	cout << "¸ðµç »ç¶÷ÀÇ ÀÌ¸§Àº ";
-	for (int i = 0; i < 3; i++)
-	{
-		cout << people[i].get_name() << ' ';
-	}
-
-	string find_name;
-	cout << "\nÀüÈ­¹øÈ£ °Ë»öÇÕ´Ï´Ù. ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä>>";
-	cin >> find_name;
-
-	for (int i = 0; i < 3; i++)
-	{
-		if (find_name == people[i].get_name())
-			cout << "ÀüÈ­ ¹øÈ£´Â " << people[i].get_tel() << endl;
-		else
-			continue;
-	}
-	return 0;
+int main() {
+    cout << "ì´ë¦„ê³¼ ì „í™” ë²ˆí˜¸ë¥¼ ìž…ë ¥í•´ì£¼ì„¸ìš”\n";
+    Person people[3];
+    for(int i = 0; i < 3; i++) {
+        string name;
+        string tel;
+        cout << "ì‚¬ëžŒ " << i + 1 << ">> ";
+        cin >> name >> tel;
+        people[i].set(name, tel);
+    }
+    
+    cout << "ëª¨ë“  ì‚¬ëžŒì˜ ì´ë¦„ì€ ";
+    for(int i = 0; i < 3; i++)
+    cout << people[i].getName() << ' ';
+    
+    cout << "\nì „í™”ë²ˆí˜¸ ê²€ìƒ‰í•©ë‹ˆë‹¤. ì´ë¦„ì„ ìž…ë ¥í•˜ì„¸ìš”>>";
+    string searchName;
+    cin >> searchName;
+    for(int i = 0; i < 3; i++) {
+        if(searchName == people[i].getName()) {
+            cout << "ì „í™” ë²ˆí˜¸ëŠ” " << people[i].getTel() << endl;
+        }
+    }
+    return 0;
 }
