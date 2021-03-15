@@ -2,28 +2,22 @@
 #include <string>
 using namespace std;
 
-int main()
-{
-	cout << "¾Æ·¡¿¡ ÇÑ ÁÙÀ» ÀÔ·ÂÇÏ¼¼¿ä.(exitÀ» ÀÔ·ÂÇÏ¸é Á¾·áÇÕ´Ï´Ù)" << endl;
-
-	while (true)
-	{
-		cout << ">>";
-		string str;
-		getline(cin, str);
-		if (str == "exit")
-			break;
-		else
-		{
-			for (int i = 0; i < str.size() / 2; i++)
-			{
-				char temp;
-				temp = str[i];
-				str[i] = str[str.size() - 1 - i];
-				str[str.size() - 1 - i] = temp;
-			}
-			cout << str << endl;
-		}
-	}
-	return 0;
+int main() {
+    cout << "ì•„ë˜ì— í•œ ì¤„ì„ ì…ë ¥í•˜ì„¸ìš”.(exitì„ ì…ë ¥í•˜ë©´ ì¢…ë£Œí•©ë‹ˆë‹¤)\n";
+    
+    while(1) {
+        cout << ">>";
+        string inputStr;
+        getline(cin, inputStr);
+        
+        if(inputStr == "exit")
+            break;
+        else {
+            for(int i = inputStr.length() - 1; i >= 0; i--) {
+                cout << inputStr[i];
+            }
+            cout << endl;
+        }
+    }
+    return 0;
 }
