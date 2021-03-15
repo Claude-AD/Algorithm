@@ -1,94 +1,31 @@
-#define _USE_MATH_DEFINES
+#include "Circle.h"
 #include <iostream>
-#include <cmath>
+#include <string>
 using namespace std;
 
-class Circle
-{
-private:
-	int radius; // ¿øÀÇ ¹İÁö¸§ °ª
-	string name; // ¿øÀÇ ÀÌ¸§
-
-public:
-	void set_circle(string name, int radius)
-	{
-		this->radius = radius;
-		this->name = name;
-	}
-	double get_area() { return M_PI * pow(radius, 2); }
-	string get_name() { return name; }
-};
-
-class CircleManager
-{
-private:
-	Circle* p; // Circle ¹è¿­¿¡ ´ëÇÑ Æ÷ÀÎÅÍ
-	int size; // ¹è¿­ÀÇ Å©±â
-
-public:
-	CircleManager(int size) // size Å©±âÀÇ ¹è¿­À» µ¿Àû »ı¼º, »ç¿ëÀÚ·ÎºÎÅÍ ÀÔ·Â ¿Ï·á
-	{
-		this->size = size;
-		p = new Circle[this->size];
-	}
-	void search_by_name(); // »ç¿ëÀÚ·ÎºÎÅÍ ¿øÀÇ ÀÌ¸§À» ÀÔ·Â¹Ş¾Æ ¸éÀû Ãâ·Â
-	void search_by_area(); // »ç¿ëÀÚ·ÎºÎÅÍ ¸éÀûÀ» ÀÔ·Â¹Ş¾Æ ¸éÀûº¸´Ù Å« ¿øÀÇ ÀÌ¸§ 
-	Circle* get_p() { return p; } // CircleManagerÀÇ ¹è¿­¿¡ Á¢±ÙÇÏ±â À§ÇÑ ÇÔ¼ö
-};
-
-void CircleManager::search_by_name()
-{
-	string circle_name;
-	cout << "°Ë»öÇÏ°íÀÚ ÇÏ´Â ¿øÀÇ ÀÌ¸§ >> ";
-	cin >> circle_name;
-
-	for (int i = 0; i < size; i++)
-	{
-		if (circle_name == p[i].get_name())
-		{
-			cout << circle_name << "ÀÇ ¸éÀûÀº " << p[i].get_area() << endl;
-		}
-		else
-			continue;
-	}
-}
-
-void CircleManager::search_by_area()
-{
-	int min_area;
-	cout << "ÃÖ¼Ò ¸éÀûÀ» Á¤¼ö·Î ÀÔ·ÂÇÏ¼¼¿ä >> ";
-	cin >> min_area;
-
-	cout << min_area << "º¸´Ù Å« ¿øÀ» °Ë»öÇÕ´Ï´Ù." << endl;
-
-	for (int i = 0; i < size; i++)
-	{
-		if (p[i].get_area() > min_area)
-		{
-			cout << p[i].get_name() << "ÀÇ ¸éÀûÀº " << p[i].get_area() << ",";
-		}
-		else
-			continue;
-	}
-}
-
-int main()
-{
-	int num_of_circle;
-	cout << "¿øÀÇ °³¼ö >> ";
-	cin >> num_of_circle;
-
-	CircleManager arr(num_of_circle);
-	for (int i = 0; i < num_of_circle; i++)
-	{
-		string name;
-		int rad;
-		printf("¿ø %dÀÇ ÀÌ¸§°ú ¹İÁö¸§ >> ", i + 1);
-		cin >> name >> rad;
-		arr.get_p()[i].set_circle(name, rad);
-	}
-
-	arr.search_by_name();
-	arr.search_by_area();
-	return 0;
+int main() {
+    int circlesNum;
+    cout << "ì›ì˜ ê°œìˆ˜ >> ";
+    cin >> circlesNum;
+    
+    CircleManager circles(circlesNum);
+    for(int i = 0; i < circlesNum; i++) {
+        string circleName;
+        int radius;
+        cout << "ì› " << i + 1 << "ì˜ ì´ë¦„ê³¼ ë°˜ì§€ë¦„ >> ";
+        cin >> circleName >> radius;
+        circles.setCircles(i, circleName, radius);
+    }
+    
+    string searchCircle;
+    cout << "ê²€ìƒ‰í•˜ê³ ì í•˜ëŠ” ì›ì˜ ì´ë¦„ >> ";
+    cin >> searchCircle;
+    circles.searchByName(searchCircle);
+    
+    int area;
+    cout << "ìµœì†Œ ë©´ì ì„ ì •ìˆ˜ë¡œ ì…ë ¥í•˜ì„¸ìš” >> ";
+    cin >> area;
+    circles.searchByArea(area);
+    
+    return 0;
 }
