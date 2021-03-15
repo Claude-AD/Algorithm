@@ -1,36 +1,18 @@
-#define _USE_MATH_DEFINES
-#include <cmath>
+#include "Circle.h"
 #include <iostream>
 using namespace std;
 
-class Circle
-{
-private:
-	int radius;
-
-public:
-	void set_radius(int radius) { this->radius = radius; }
-	double get_area() { return M_PI * pow(radius, 2); }
-};
-
-int main()
-{
-	Circle arr[3];
-	for (int i = 0; i < 3; i++)
-	{
-		printf("¿ø %dÀÇ ¹İÁö¸§ >> ", i + 1);
-		int r;
-		cin >> r;
-		arr[i].set_radius(r);
-	}
-
-	int count = 0;
-	for (int i = 0; i < 3; i++)
-	{
-		if (arr[i].get_area() > 100)
-			count++;
-	}
-
-	printf("¸éÀûÀÌ 100º¸´Ù Å« ¿øÀº %d°³ ÀÔ´Ï´Ù\n", count);
-	return 0;
+int main() {
+    Circle circles[3];
+    int overHunnitCnt = 0;
+    for(int i = 0; i < 3; i++) {
+        cout << "ì› " << i+1 << "ì˜ ë°˜ì§€ë¦„ >> ";
+        int r;
+        cin >> r;
+        circles[i].setRadius(r);
+        if(circles[i].getArea() > 100)
+            overHunnitCnt++;
+    }
+    cout << "ë©´ì ì´ 100ë³´ë‹¤ í° ì›ì€ " << overHunnitCnt << "ê°œ ì…ë‹ˆë‹¤\n";
+    return 0;
 }
