@@ -1,77 +1,17 @@
+#include "Gambling.h"
 #include <iostream>
-#include <ctime>
 #include <string>
 using namespace std;
 
-class Player
-{
-private:
-	string name; // ¼±¼ö ÀÌ¸§
-
-public:
-	void set_name(string name) // ¼±¼ö ÀÌ¸§ ¼¼ÆÃ
-	{
-		this->name = name;
-	}
-	string get_name() { return name; }
-};
-
-class GamblingGame
-{
-private:
-	Player player[2]; // µÎ ¸íÀÇ ÇÃ·¹ÀÌ¾î
-
-public:
-	GamblingGame(string name1, string name2) // ÀÔ·Â¹ŞÀº ÀÌ¸§À¸·Î ¼±¼ö ÀÌ¸§ ¼¼ÆÃ
-	{
-		player[0].set_name(name1);
-		player[1].set_name(name2);
-	}
-	void Gambling();
-};
-
-void GamblingGame::Gambling()
-{
-	int player_number = 0;
-	while (true)
-	{
-		char start;
-		cout << player[player_number % 2].get_name() << ":";
-		cin.get(start);
-
-		srand(time(nullptr));
-		if (start == '\n')
-		{
-			int num1 = rand() % 3;
-			int num2 = rand() % 3;
-			int num3 = rand() % 3;
-
-			cout << '\t' << num1 << '\t' << num2 << '\t' << num3 << '\t';
-			if (num1 == num2 && num1 == num3)
-			{
-				cout << player[player_number % 2].get_name() << "´Ô ½Â¸®!!" << endl;
-				break;
-			}
-			else
-			{
-				cout << "¾Æ½±±º¿ä!" << endl;
-			}
-		}
-		player_number++;
-	}
-}
-
-int main()
-{
-	string player1, player2;
-	cout << "***** °×ºí¸µ °ÔÀÓÀ» ½ÃÀÛÇÕ´Ï´Ù. *****" << endl;
-	cout << "Ã¹¹øÂ° ¼±¼ö ÀÌ¸§>>";
-	getline(cin, player1);
-	cout << "µÎ¹øÂ° ¼±¼ö ÀÌ¸§>>";
-	getline(cin, player2);
-	GamblingGame game(player1, player2);
-
-	game.Gambling();
-
-	return 0;
+int main() {
+    cout << "***** ê²œë¸”ë§ ê²Œì„ì„ ì‹œì‘í•©ë‹ˆë‹¤. *****\n";
+    string player1, player2;
+    cout << "ì²«ë²ˆì§¸ ì„ ìˆ˜ ì´ë¦„>>";
+    getline(cin, player1);  // cinìœ¼ë¡œ ì…ë ¥ë°›ìœ¼ë©´ ì…ë ¥íì— \nì´ ë‚¨ì•„ìˆì–´ ë³´ê¸° ì•ˆì¢‹ìŒ
+    cout << "ë‘ë²ˆì§¸ ì„ ìˆ˜ ì´ë¦„>>";
+    getline(cin, player2);
+    
+    GamblingGame game;
+    game.run(player1, player2);
+    return 0;
 }
